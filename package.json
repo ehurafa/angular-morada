@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build:single-spa": "ng run morada:build-single-spa:production",
+    "serve:single-spa": "ng run morada:serve-single-spa:development"
   },
   "prettier": {
     "printWidth": 100,
@@ -29,10 +31,13 @@
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
     "rxjs": "~7.8.0",
+    "single-spa": ">=4.0.0",
+    "single-spa-angular": "^20.1.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "20.0.0",
     "@angular/build": "^20.3.34",
     "@angular/cli": "^20.3.34",
     "@angular/compiler-cli": "^20.3.0",
@@ -43,6 +48,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "style-loader": "^3.3.1",
     "typescript": "~5.9.2"
   }
 }

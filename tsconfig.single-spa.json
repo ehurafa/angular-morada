@@ -1,11 +1,11 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./out-tsc/app",
+    "outDir": "./out-tsc/single-spa",
     "types": []
   },
   "files": [
-    "src/main.ts"
+    "src/main.single-spa.ts"
   ],
   "include": [
     "src/**/*.d.ts"

@@ -72,6 +72,77 @@
           },
           "defaultConfiguration": "development"
         },
+        "build-single-spa": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "outputPath": "dist/morada-single-spa",
+            "index": "src/index.html",
+            "main": "src/main.single-spa.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.single-spa.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
+            "customWebpackConfig": {
+              "path": "extra-webpack.config.js",
+              "libraryName": "morada",
+              "libraryTarget": "umd"
+            },
+            "deployUrl": "http://localhost:4202/"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "none"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "outputHashing": "none"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-single-spa": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "port": 4202,
+            "liveReload": false
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "morada:build-single-spa:production"
+            },
+            "development": {
+              "buildTarget": "morada:build-single-spa:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
         },
