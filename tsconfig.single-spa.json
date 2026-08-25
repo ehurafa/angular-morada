@@ -4,13 +4,7 @@
     "outDir": "./out-tsc/single-spa",
     "types": []
   },
-  "files": [
-    "src/main.single-spa.ts"
-  ],
-  "include": [
-    "src/**/*.d.ts"
-  ],
-  "exclude": [
-    "src/**/*.spec.ts"
-  ]
+  "files": ["src/main.single-spa.ts"],
+  "include": ["src/**/*.d.ts"],
+  "exclude": ["src/**/*.spec.ts"]
 }
