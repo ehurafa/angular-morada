@@ -14,5 +14,4 @@ export interface PropertySearchResult {
   readonly properties: readonly Property[];
   readonly matchType: SearchMatchType;
   readonly normalizedQuery: string;
-  readonly message: string | null;
 }
