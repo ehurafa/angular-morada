@@ -23,10 +23,10 @@ export interface Property {
   readonly transactionType: TransactionType;
   readonly price: number;
   readonly bedrooms: number;
-  readonly bathrooms: number;
+  readonly bathrooms: number | null;
   readonly area: number;
   readonly parkingSpaces: number;
-  readonly description: string;
+  readonly description: string | null;
   readonly amenities: readonly string[];
   readonly images: readonly PropertyImage[];
   readonly location: PropertyLocation;
