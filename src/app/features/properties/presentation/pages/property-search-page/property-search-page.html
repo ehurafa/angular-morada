@@ -1,0 +1,31 @@
+<main>
+  <header>
+    <h1>Imóveis em São Paulo</h1>
+    <p>Encontre opções para comprar ou alugar.</p>
+  </header>
+
+  <morada-property-search-form
+    [filters]="store.filters()"
+    (filtersChanged)="store.updateFilters($event)"
+    (searchRequested)="store.search()"
+  />
+
+  <section aria-live="polite" aria-label="Resultados da busca">
+    @if (store.loading()) {
+      <p>Buscando imóveis...</p>
+    } @else if (store.error()) {
+      <div role="alert">
+        <p>Não foi possível carregar os imóveis.</p>
+        <button type="button" (click)="store.search()">Tentar novamente</button>
+      </div>
+    } @else {
+      <p>{{ store.properties().length }} imóveis encontrados</p>
+
+      @for (property of store.properties(); track property.id) {
+        <morada-property-card [property]="property" />
+      } @empty {
+        <p>Nenhum imóvel encontrado com os filtros atuais.</p>
+      }
+    }
+  </section>
+</main>

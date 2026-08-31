@@ -1,0 +1,86 @@
+<form role="search" (submit)="submitSearch($event)">
+  <fieldset>
+    <legend>Finalidade</legend>
+
+    <button
+      type="button"
+      [attr.aria-pressed]="filters().transactionType === 'sale'"
+      (click)="selectTransactionType('sale')"
+    >
+      Comprar
+    </button>
+
+    <button
+      type="button"
+      [attr.aria-pressed]="filters().transactionType === 'rent'"
+      (click)="selectTransactionType('rent')"
+    >
+      Alugar
+    </button>
+  </fieldset>
+
+  <div>
+    <label for="property-location">Bairro ou localização</label>
+
+    <input
+      id="property-location"
+      name="query"
+      type="search"
+      autocomplete="off"
+      placeholder="Ex.: Pinheiros ou Vila Madalena"
+      [value]="filters().query"
+      (input)="updateQuery($event)"
+    />
+  </div>
+
+  <div>
+    <label for="property-type">Tipo de imóvel</label>
+
+    <select
+      id="property-type"
+      name="propertyType"
+      [value]="filters().propertyType ?? ''"
+      (change)="updatePropertyType($event)"
+    >
+      <option value="">Todos os tipos</option>
+      <option value="apartment">Apartamento</option>
+      <option value="house">Casa</option>
+      <option value="studio">Studio</option>
+      <option value="penthouse">Cobertura</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="minimum-bedrooms">Quartos</label>
+
+    <select
+      id="minimum-bedrooms"
+      name="minimumBedrooms"
+      [value]="filters().minimumBedrooms ?? ''"
+      (change)="updateMinimumBedrooms($event)"
+    >
+      <option value="">Qualquer quantidade</option>
+      <option value="1">1 ou mais</option>
+      <option value="2">2 ou mais</option>
+      <option value="3">3 ou mais</option>
+      <option value="4">4 ou mais</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="maximum-price">Preço máximo</label>
+
+    <input
+      id="maximum-price"
+      name="maximumPrice"
+      type="number"
+      inputmode="numeric"
+      min="0"
+      placeholder="Sem limite"
+      [value]="filters().maximumPrice ?? ''"
+      (input)="updateMaximumPrice($event)"
+    />
+  </div>
+
+  <button type="submit">Buscar imóveis</button>
+</form>

@@ -1,0 +1,55 @@
+<article>
+  @if (firstImage(); as image) {
+    <figure>
+      <img [src]="image.url" [alt]="image.alt" width="640" height="420" loading="lazy" />
+
+      @if (image.credit) {
+        <figcaption>{{ image.credit }}</figcaption>
+      }
+    </figure>
+  }
+
+  <header>
+    <p>{{ transactionLabel() }}</p>
+    <h2>{{ property().title }}</h2>
+    <p>
+      {{ property().location.neighborhood }},
+      {{ property().location.city }}
+    </p>
+  </header>
+
+  <p>
+    <strong>{{ formattedPrice() }}</strong>
+
+    @if (priceSuffix()) {
+      <span>{{ priceSuffix() }}</span>
+    }
+  </p>
+
+  <ul aria-label="Características do imóvel">
+    <li>
+      {{ property().bedrooms }}
+      {{ property().bedrooms === 1 ? 'quarto' : 'quartos' }}
+    </li>
+
+    @if (property().bathrooms !== null) {
+      <li>
+        {{ property().bathrooms }}
+        {{ property().bathrooms === 1 ? 'banheiro' : 'banheiros' }}
+      </li>
+    }
+
+    <li>{{ property().area }} m²</li>
+
+    @if (property().parkingSpaces > 0) {
+      <li>
+        {{ property().parkingSpaces }}
+        {{ property().parkingSpaces === 1 ? 'vaga' : 'vagas' }}
+      </li>
+    }
+  </ul>
+
+  @if (property().description) {
+    <p>{{ property().description }}</p>
+  }
+</article>
