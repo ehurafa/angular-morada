@@ -61,5 +61,18 @@ export function createApp({ allowedOrigins = DEFAULT_ALLOWED_ORIGINS, properties
     });
   });
 
+  app.get('/api/properties/:id', (request, response) => {
+    const property = properties.find(({ id }) => id === request.params.id);
+
+    if (!property) {
+      response.status(404).json({
+        message: 'Imóvel não encontrado.',
+      });
+      return;
+    }
+
+    response.json(toResponseItem(property));
+  });
+
   return app;
 }

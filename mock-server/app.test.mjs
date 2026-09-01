@@ -83,3 +83,29 @@ describe('GET /api/properties', () => {
     assert.equal(response.headers['access-control-allow-origin'], undefined);
   });
 });
+
+describe('GET /api/properties/:id', () => {
+  it('returns a property by id without internal search terms', async () => {
+    const app = createApp({
+      properties: CATALOG,
+    });
+
+    const response = await request(app).get('/api/properties/property-2').expect(200);
+
+    assert.equal(response.body.id, 'property-2');
+    assert.equal(response.body.title, 'Apartamento reformado');
+    assert.equal('searchTerms' in response.body, false);
+  });
+
+  it('returns 404 when the property does not exist', async () => {
+    const app = createApp({
+      properties: CATALOG,
+    });
+
+    const response = await request(app).get('/api/properties/property-999').expect(404);
+
+    assert.deepEqual(response.body, {
+      message: 'Imóvel não encontrado.',
+    });
+  });
+});
