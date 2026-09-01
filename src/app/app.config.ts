@@ -6,6 +6,9 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
+import { PropertyDetailsRepository } from './features/properties/application/ports/property-details.repository';
+import { HttpPropertyDetailsRepository } from './features/properties/data-access/http/http-property-details.repository';
+
 import { API_BASE_URL } from './core/config/api-base-url.token';
 import { PropertySearchRepository } from './features/properties/application/ports/property-search.repository';
 import { HttpPropertySearchRepository } from './features/properties/data-access/http/http-property-search.repository';
@@ -25,6 +28,10 @@ export function createAppConfig(apiBaseUrl: string): ApplicationConfig {
       {
         provide: PropertySearchRepository,
         useClass: HttpPropertySearchRepository,
+      },
+      {
+        provide: PropertyDetailsRepository,
+        useClass: HttpPropertyDetailsRepository,
       },
     ],
   };
