@@ -1,0 +1,96 @@
+@let item = property();
+
+<section class="content-section">
+  <h2>Sobre este imóvel</h2>
+
+  <p class="description">
+    {{
+      item.description ??
+        'O anunciante ainda não adicionou uma descrição a este imóvel demonstrativo.'
+    }}
+  </p>
+</section>
+
+<section class="content-section">
+  <h2>Características</h2>
+
+  @if (item.amenities.length > 0) {
+    <ul class="amenities">
+      @for (amenity of item.amenities; track amenity) {
+        <li>{{ amenity }}</li>
+      }
+    </ul>
+  } @else {
+    <p class="content-empty">
+      As características adicionais ainda não foram informadas neste anúncio demonstrativo.
+    </p>
+  }
+</section>
+
+<section class="content-section costs">
+  <div class="section-heading">
+    <div>
+      <h2>Custos para comparar</h2>
+      <p>Valores mensais e simulação educativa.</p>
+    </div>
+
+    <span>Demonstrativo</span>
+  </div>
+
+  <dl>
+    <div>
+      <dt>Condomínio</dt>
+
+      <dd>
+        @if (item.condominiumFee !== null) {
+          {{ formatCurrency(item.condominiumFee) }}
+          <small>/mês</small>
+        } @else {
+          <span class="not-informed">Não informado</span>
+        }
+      </dd>
+    </div>
+
+    <div>
+      <dt>IPTU</dt>
+
+      <dd>
+        @if (item.propertyTax !== null) {
+          {{ formatCurrency(item.propertyTax) }}
+          <small>/mês</small>
+        } @else {
+          <span class="not-informed">Não informado</span>
+        }
+      </dd>
+    </div>
+
+    @if (item.transactionType === 'rent') {
+      <div>
+        <dt>Aluguel anunciado</dt>
+
+        <dd>
+          {{ formatCurrency(item.price) }}
+          <small>/mês</small>
+        </dd>
+      </div>
+    } @else if (monthlyEstimate(); as estimate) {
+      <div>
+        <dt>Financiamento estimado</dt>
+
+        <dd>
+          {{ formatCurrency(estimate) }}
+          <small>/mês</small>
+        </dd>
+      </div>
+    }
+  </dl>
+
+  <p class="simulation-note">
+    @if (item.transactionType === 'rent') {
+      Condomínio e IPTU dependem da confirmação do anunciante.
+    } @else {
+      Entrada de 20%, taxa ilustrativa de 0,9% ao mês e prazo de 360 meses. Não é proposta de
+      crédito.
+    }
+  </p>
+</section>
