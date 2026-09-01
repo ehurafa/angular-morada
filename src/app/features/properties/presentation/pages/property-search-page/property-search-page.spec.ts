@@ -87,7 +87,7 @@ describe('PropertySearchPage', () => {
 
     expect(article).not.toBeNull();
     expect(article.querySelector('h2')?.textContent).toContain(PROPERTY.title);
-    expect(article.textContent).toContain('Pinheiros, São Paulo');
+    expect(article.textContent).toContain('Pinheiros · São Paulo');
     expect(article.textContent).toContain('2 quartos');
     expect(article.textContent).toContain('82 m²');
   });
@@ -99,7 +99,7 @@ describe('PropertySearchPage', () => {
     const alert = fixture.nativeElement.querySelector('[role="alert"]') as HTMLElement;
     const retryButton = alert.querySelector('button') as HTMLButtonElement;
 
-    expect(alert.textContent).toContain('Não foi possível carregar os imóveis.');
+    expect(alert.textContent).toContain('Não foi possível carregar os imóveis');
 
     repository.search.and.returnValue(of(SEARCH_RESULT));
 

@@ -10,6 +10,7 @@ import type { PropertySearchFilters } from '../../../domain/models/property-sear
 })
 export class PropertySearchForm {
   readonly filters = input.required<PropertySearchFilters>();
+  readonly loading = input(false);
 
   readonly filtersChanged = output<Partial<PropertySearchFilters>>();
   readonly searchRequested = output<void>();
@@ -48,6 +49,11 @@ export class PropertySearchForm {
 
   protected submitSearch(event: Event): void {
     event.preventDefault();
+
+    if (this.loading()) {
+      return;
+    }
+
     this.searchRequested.emit();
   }
 

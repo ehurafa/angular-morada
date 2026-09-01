@@ -1,1 +1,69 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+
+body {
+  margin: 0;
+}
+
+morada-root {
+  --morada-navy: #0b1739;
+  --morada-blue: #225ee6;
+  --morada-blue-dark: #1749ba;
+  --morada-sky: #eaf1ff;
+  --morada-ground: #f4f5f7;
+  --morada-surface: #fdfdfd;
+  --morada-line: #d9dee8;
+  --morada-muted: #5b6478;
+  --morada-mint: #dcefe6;
+  --morada-success: #176b4d;
+  --morada-focus: #78a2ff;
+
+  display: block;
+  min-height: 100vh;
+  background: var(--morada-ground);
+  color: var(--morada-navy);
+  font-family: 'IBM Plex Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scrollbar-color: #8795b3 #eef1f5;
+  scrollbar-width: thin;
+}
+
+morada-root,
+morada-root *,
+morada-root *::before,
+morada-root *::after {
+  box-sizing: border-box;
+}
+
+morada-root button,
+morada-root input,
+morada-root select,
+morada-root textarea {
+  font: inherit;
+}
+
+morada-root input,
+morada-root select,
+morada-root textarea {
+  caret-color: var(--morada-blue);
+}
+
+morada-root ::selection {
+  background: var(--morada-blue);
+  color: #fff;
+}
+
+morada-root :focus-visible {
+  outline: 3px solid var(--morada-focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  morada-root *,
+  morada-root *::before,
+  morada-root *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}

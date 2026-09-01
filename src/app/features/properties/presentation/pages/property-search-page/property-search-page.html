@@ -1,31 +1,89 @@
-<main>
-  <header>
-    <h1>Imóveis em São Paulo</h1>
-    <p>Encontre opções para comprar ou alugar.</p>
-  </header>
+<header class="portal-header">
+  <div class="header-inner">
+    <a class="brand" href="#search" aria-label="Morada — página inicial"> morada </a>
 
-  <morada-property-search-form
-    [filters]="store.filters()"
-    (filtersChanged)="store.updateFilters($event)"
-    (searchRequested)="store.search()"
-  />
+    <nav class="desktop-navigation" aria-label="Navegação principal">
+      <button type="button" (click)="selectTransactionType('sale')">Comprar</button>
 
-  <section aria-live="polite" aria-label="Resultados da busca">
+      <button type="button" (click)="selectTransactionType('rent')">Alugar</button>
+
+      <button type="button" (click)="showDemoFeature('Anunciar imóvel')">Anunciar imóvel</button>
+    </nav>
+
+    <div class="account-actions">
+      <button class="account-secondary" type="button" (click)="showDemoFeature('Entrar')">
+        Entrar
+      </button>
+
+      <button class="account-primary" type="button" (click)="showDemoFeature('Criar conta')">
+        Criar conta
+      </button>
+    </div>
+  </div>
+
+  @if (demoNotice()) {
+    <p class="header-status" role="status">{{ demoNotice() }}</p>
+  }
+</header>
+
+<main id="search" class="portal-shell">
+  <section class="hero" aria-labelledby="search-title">
+    <div class="hero-photo" aria-hidden="true"></div>
+
+    <div class="search-card-wrap">
+      <div class="search-card">
+        <h1 id="search-title">Encontre um lugar para chamar de seu</h1>
+
+        <morada-property-search-form
+          [filters]="store.filters()"
+          [loading]="store.loading()"
+          (filtersChanged)="store.updateFilters($event)"
+          (searchRequested)="store.search()"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section id="results" class="results-section" aria-labelledby="results-title">
+    <header class="results-heading">
+      <div>
+        <h2 id="results-title">Imóveis que combinam com sua busca</h2>
+
+        <p>
+          {{ store.properties().length }}
+          {{ store.properties().length === 1 ? 'opção demonstrativa' : 'opções demonstrativas' }}
+          em São Paulo. Preços, anúncios e contatos são sintéticos.
+        </p>
+      </div>
+    </header>
+
     @if (store.loading()) {
-      <p>Buscando imóveis...</p>
+      <div class="state-panel" role="status">
+        <span class="loading-indicator" aria-hidden="true"></span>
+        <p>Buscando imóveis...</p>
+      </div>
     } @else if (store.error()) {
-      <div role="alert">
-        <p>Não foi possível carregar os imóveis.</p>
+      <div class="state-panel error" role="alert">
+        <h3>Não foi possível carregar os imóveis</h3>
+        <p>Tente novamente em alguns instantes.</p>
+
         <button type="button" (click)="store.search()">Tentar novamente</button>
       </div>
     } @else {
-      <p>{{ store.properties().length }} imóveis encontrados</p>
-
-      @for (property of store.properties(); track property.id) {
-        <morada-property-card [property]="property" />
-      } @empty {
-        <p>Nenhum imóvel encontrado com os filtros atuais.</p>
-      }
+      <div class="property-grid">
+        @for (property of store.properties(); track property.id) {
+          <morada-property-card
+            [property]="property"
+            (detailsRequested)="showDemoFeature('Detalhes do imóvel')"
+            (mapRequested)="showDemoFeature('Mapa do imóvel')"
+          />
+        } @empty {
+          <div class="state-panel">
+            <h3>Nenhum imóvel com esses filtros</h3>
+            <p>Remova um filtro ou tente outra localização.</p>
+          </div>
+        }
+      </div>
     }
   </section>
 </main>

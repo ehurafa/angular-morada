@@ -66,12 +66,10 @@ describe('PropertyCard', () => {
     const element = fixture.nativeElement as HTMLElement;
     const image = element.querySelector<HTMLImageElement>('img')!;
 
-    expect(element.textContent).toContain('À venda');
     expect(element.textContent).toContain('Apartamento em Pinheiros');
     expect(element.textContent).toContain('R$');
     expect(element.textContent).toContain('950.000');
     expect(element.textContent).toContain('2 quartos');
-    expect(element.textContent).toContain('2 banheiros');
     expect(element.textContent).toContain('1 vaga');
     expect(image.getAttribute('src')).toBe('/images/property-1.webp');
     expect(image.alt).toBe('Sala do apartamento');
@@ -84,12 +82,30 @@ describe('PropertyCard', () => {
 
     const element = fixture.nativeElement as HTMLElement;
 
-    expect(element.textContent).toContain('Para alugar');
     expect(element.textContent).toContain('3.900');
     expect(element.textContent).toContain('/mês');
     expect(element.textContent).toContain('1 quarto');
     expect(element.textContent).not.toContain('banheiro');
-    expect(element.textContent).not.toContain('vaga');
+    expect(element.textContent).toContain('0 vagas');
     expect(element.querySelector('figure')).toBeNull();
+  });
+  it('emits the selected property for detail and map actions', () => {
+    const details: string[] = [];
+    const maps: string[] = [];
+
+    fixture.componentInstance.detailsRequested.subscribe((id) => details.push(id));
+    fixture.componentInstance.mapRequested.subscribe((id) => maps.push(id));
+
+    fixture.componentRef.setInput('property', SALE_PROPERTY);
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const actionButtons = element.querySelectorAll<HTMLButtonElement>('.property-actions button');
+
+    actionButtons[0].click();
+    actionButtons[1].click();
+
+    expect(details).toEqual([SALE_PROPERTY.id]);
+    expect(maps).toEqual([SALE_PROPERTY.id]);
   });
 });

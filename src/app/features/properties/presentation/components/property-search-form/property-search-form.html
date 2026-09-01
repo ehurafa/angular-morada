@@ -27,7 +27,7 @@
       name="query"
       type="search"
       autocomplete="off"
-      placeholder="Ex.: Pinheiros ou Vila Madalena"
+      placeholder="Bairro, rua ou metrô"
       [value]="filters().query"
       (input)="updateQuery($event)"
     />
@@ -42,7 +42,7 @@
       [value]="filters().propertyType ?? ''"
       (change)="updatePropertyType($event)"
     >
-      <option value="">Todos os tipos</option>
+      <option value="">Todos os imóveis</option>
       <option value="apartment">Apartamento</option>
       <option value="house">Casa</option>
       <option value="studio">Studio</option>
@@ -59,7 +59,7 @@
       [value]="filters().minimumBedrooms ?? ''"
       (change)="updateMinimumBedrooms($event)"
     >
-      <option value="">Qualquer quantidade</option>
+      <option value="">Todos</option>
       <option value="1">1 ou mais</option>
       <option value="2">2 ou mais</option>
       <option value="3">3 ou mais</option>
@@ -76,11 +76,13 @@
       type="number"
       inputmode="numeric"
       min="0"
-      placeholder="Sem limite"
+      placeholder="R$"
       [value]="filters().maximumPrice ?? ''"
       (input)="updateMaximumPrice($event)"
     />
   </div>
 
-  <button type="submit">Buscar imóveis</button>
+  <button type="submit" [disabled]="loading()">
+    {{ loading() ? 'Buscando…' : 'Buscar imóveis' }}
+  </button>
 </form>
