@@ -1,0 +1,88 @@
+<aside class="contact-card" aria-labelledby="contact-title">
+  <span class="contact-badge">Contato demonstrativo</span>
+
+  <h2 id="contact-title">Agende uma visita</h2>
+
+  <p class="contact-description">
+    Preencha seus dados para simular o contato com o anunciante. Nenhuma mensagem sai deste
+    ambiente.
+  </p>
+
+  @if (submitted()) {
+    <div class="success-state">
+      <p #feedback class="success-message" role="status" tabindex="-1">
+        Solicitação registrada apenas nesta demonstração. Nenhuma mensagem foi enviada.
+      </p>
+
+      <button type="button" class="secondary-action" (click)="resetContact()">
+        Preencher novamente
+      </button>
+    </div>
+  } @else {
+    <form [formGroup]="contactForm" novalidate (ngSubmit)="submitContact()">
+      <div class="form-field">
+        <label for="contact-name">Nome</label>
+
+        <input
+          id="contact-name"
+          type="text"
+          formControlName="name"
+          autocomplete="name"
+          maxlength="80"
+          [attr.aria-invalid]="isInvalid('name')"
+          [attr.aria-describedby]="isInvalid('name') ? 'contact-name-error' : null"
+        />
+
+        @if (isInvalid('name')) {
+          <p id="contact-name-error" class="field-error">Informe seu nome.</p>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="contact-email">E-mail</label>
+
+        <input
+          id="contact-email"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          maxlength="160"
+          inputmode="email"
+          [attr.aria-invalid]="isInvalid('email')"
+          [attr.aria-describedby]="isInvalid('email') ? 'contact-email-error' : null"
+        />
+
+        @if (isInvalid('email')) {
+          <p id="contact-email-error" class="field-error">
+            @if (contactForm.controls.email.hasError('required')) {
+              Informe seu e-mail.
+            } @else {
+              Digite um e-mail válido.
+            }
+          </p>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="contact-message">Mensagem</label>
+
+        <textarea
+          id="contact-message"
+          formControlName="message"
+          rows="5"
+          maxlength="1000"
+          [attr.aria-invalid]="isInvalid('message')"
+          [attr.aria-describedby]="isInvalid('message') ? 'contact-message-error' : null"
+        ></textarea>
+
+        @if (isInvalid('message')) {
+          <p id="contact-message-error" class="field-error">Escreva uma mensagem.</p>
+        }
+      </div>
+
+      <button class="primary-action" type="submit">Quero agendar uma visita</button>
+    </form>
+  }
+
+  <p class="privacy-note">Seus dados são usados apenas nesta demonstração local.</p>
+</aside>
