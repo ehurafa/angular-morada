@@ -1,3 +1,42 @@
+const GALLERY_IMAGES = [
+  {
+    url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=90',
+    credit: 'Unsplash · Roberto Nickson',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1600&q=90',
+    credit: 'Unsplash · Roberto Nickson',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1600&q=90',
+    credit: 'Unsplash · Hutomo Abrianto',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=90',
+    credit: 'Unsplash · Hutomo Abrianto',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=90',
+    credit: 'Unsplash · Collov Home Design',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=90',
+    credit: 'Unsplash · Avi Werde',
+  },
+];
+
+function buildGallery(startIndex) {
+  const images = Array.from(
+    { length: 4 },
+    (_, offset) => GALLERY_IMAGES[(startIndex + offset) % GALLERY_IMAGES.length],
+  );
+
+  return {
+    imageUrls: images.map(({ url }) => url),
+    imageCredits: images.map(({ credit }) => credit),
+  };
+}
+
 export const PROPERTIES = [
   {
     id: 'apt-vila-madalena-01',
@@ -11,10 +50,7 @@ export const PROPERTIES = [
     parkingSpaces: 1,
     description: 'Apartamento bem iluminado, com varanda e acesso fácil ao metrô.',
     amenities: ['Varanda', 'Elevador', 'Portaria 24 horas'],
-    imageUrls: [
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=88',
-    ],
-    imageCredits: ['Unsplash · Roberto Nickson'],
+    ...buildGallery(0),
     neighborhood: 'Vila Madalena',
     city: 'São Paulo',
     stateCode: 'SP',
@@ -37,10 +73,7 @@ export const PROPERTIES = [
     parkingSpaces: 1,
     description: 'Planta funcional, cozinha integrada e localização próxima à Faria Lima.',
     amenities: ['Academia', 'Salão de festas', 'Bicicletário'],
-    imageUrls: [
-      'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1200&q=88',
-    ],
-    imageCredits: ['Unsplash · Hutomo Abrianto'],
+    ...buildGallery(2),
     neighborhood: 'Pinheiros',
     city: 'São Paulo',
     stateCode: 'SP',
@@ -63,10 +96,7 @@ export const PROPERTIES = [
     parkingSpaces: 0,
     description: 'Studio mobiliado com serviços no condomínio e boa oferta de transporte.',
     amenities: ['Mobiliado', 'Lavanderia coletiva', 'Coworking'],
-    imageUrls: [
-      'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=88',
-    ],
-    imageCredits: ['Unsplash · Collov Home Design'],
+    ...buildGallery(4),
     neighborhood: 'Consolação',
     city: 'São Paulo',
     stateCode: 'SP',
@@ -89,10 +119,7 @@ export const PROPERTIES = [
     parkingSpaces: 2,
     description: 'Casa com ambientes amplos, jardim reservado e espaço para escritório.',
     amenities: ['Jardim', 'Escritório', 'Área de serviço'],
-    imageUrls: [
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=88',
-    ],
-    imageCredits: ['Unsplash · Avi Werde'],
+    ...buildGallery(5),
     neighborhood: 'Perdizes',
     city: 'São Paulo',
     stateCode: 'SP',
