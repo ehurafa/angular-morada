@@ -85,6 +85,10 @@
 
 .detail-grid {
   padding-top: 52px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  align-items: start;
+  gap: 64px;
 }
 
 .loading-indicator {
@@ -324,6 +328,11 @@
     grid-auto-rows: 128px;
     overflow-x: auto;
   }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
 }
 
 @media (max-width: 820px) {
@@ -367,6 +376,10 @@
     strong {
       font-size: 28px;
     }
+  }
+
+  .detail-grid {
+    padding-top: 36px;
   }
 
   .gallery-main {

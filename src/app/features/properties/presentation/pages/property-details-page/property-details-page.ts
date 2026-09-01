@@ -4,12 +4,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import type { TransactionType } from '../../../domain/models/property';
 import { SiteHeader } from '../../../../../shared/components/site-header/site-header';
 import { PropertyDetailsContent } from '../../components/property-details-content/property-details-content';
+import { PropertyContactForm } from '../../components/property-contact-form/property-contact-form';
 
 import { PropertyDetailsStore } from '../../../application/state/property-details.store';
 
 @Component({
   selector: 'morada-property-details-page',
-  imports: [PropertyDetailsContent, RouterLink, SiteHeader],
+  imports: [PropertyContactForm, PropertyDetailsContent, RouterLink, SiteHeader],
   providers: [PropertyDetailsStore],
   templateUrl: './property-details-page.html',
   styleUrl: './property-details-page.scss',
