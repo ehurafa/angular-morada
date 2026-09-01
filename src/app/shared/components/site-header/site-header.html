@@ -1,0 +1,29 @@
+<header class="portal-header">
+  <div class="header-inner">
+    <a class="brand" routerLink="/" aria-label="Morada — página inicial"> morada </a>
+
+    <nav class="desktop-navigation" aria-label="Navegação principal">
+      <button type="button" (click)="requestTransactionType('sale')">Comprar</button>
+
+      <button type="button" (click)="requestTransactionType('rent')">Alugar</button>
+
+      <button type="button" (click)="requestFeature('Anunciar imóvel')">Anunciar imóvel</button>
+    </nav>
+
+    <div class="account-actions">
+      <button class="account-secondary" type="button" (click)="requestFeature('Entrar')">
+        Entrar
+      </button>
+
+      <button class="account-primary" type="button" (click)="requestFeature('Criar conta')">
+        Criar conta
+      </button>
+    </div>
+  </div>
+
+  @if (statusMessage()) {
+    <p class="header-status" role="status">
+      {{ statusMessage() }}
+    </p>
+  }
+</header>
