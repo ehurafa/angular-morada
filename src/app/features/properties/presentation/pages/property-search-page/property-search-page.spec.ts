@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, Subject } from 'rxjs';
+import { provideRouter, Router } from '@angular/router';
 
 import { PropertySearchRepository } from '../../../application/ports/property-search.repository';
 import type { Property } from '../../../domain/models/property';
@@ -53,6 +54,7 @@ describe('PropertySearchPage', () => {
   let fixture: ComponentFixture<PropertySearchPage>;
   let repository: jasmine.SpyObj<PropertySearchRepository>;
   let response: Subject<PropertySearchResult>;
+  let router: Router;
 
   beforeEach(async () => {
     repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
@@ -64,6 +66,7 @@ describe('PropertySearchPage', () => {
     await TestBed.configureTestingModule({
       imports: [PropertySearchPage],
       providers: [
+        provideRouter([]),
         {
           provide: PropertySearchRepository,
           useValue: repository,
@@ -72,6 +75,7 @@ describe('PropertySearchPage', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(PropertySearchPage);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -109,5 +113,21 @@ describe('PropertySearchPage', () => {
     expect(repository.search).toHaveBeenCalledTimes(2);
     expect(fixture.nativeElement.querySelector('article')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('[role="alert"]')).toBeNull();
+  });
+
+  it('navigates to the selected property details', () => {
+    const navigate = spyOn(router, 'navigate').and.resolveTo(true);
+
+    response.next(SEARCH_RESULT);
+    response.complete();
+    fixture.detectChanges();
+
+    const detailsButton = fixture.nativeElement.querySelector(
+      '.property-actions button',
+    ) as HTMLButtonElement;
+
+    detailsButton.click();
+
+    expect(navigate).toHaveBeenCalledOnceWith(['/imoveis', 'property-1']);
   });
 });
