@@ -1,0 +1,138 @@
+<morada-site-header
+  [statusMessage]="demoNotice()"
+  (transactionTypeRequested)="openSearch($event)"
+  (featureRequested)="showDemoFeature($event)"
+/>
+
+<main class="property-details-page">
+  @if (store.loading()) {
+    <section class="page-state" aria-busy="true" aria-live="polite">
+      <span class="loading-indicator" aria-hidden="true"></span>
+
+      <h1>Carregando o imóvel</h1>
+      <p>Carregando detalhes do imóvel...</p>
+    </section>
+  } @else if (store.error()) {
+    <section class="page-state error-state" role="alert">
+      <h1>Não foi possível carregar este imóvel</h1>
+      <p>Tente novamente em alguns instantes.</p>
+
+      <button type="button" (click)="retryLoad()">Tentar novamente</button>
+    </section>
+  } @else if (store.property(); as property) {
+    <article class="property-details">
+      <nav class="breadcrumb" aria-label="Caminho da página">
+        <a routerLink="/">Início</a>
+        <span aria-hidden="true">/</span>
+
+        <a routerLink="/">Imóveis</a>
+        <span aria-hidden="true">/</span>
+
+        <span>{{ property.location.neighborhood }}</span>
+      </nav>
+
+      <section class="property-heading" aria-labelledby="property-title">
+        <div class="heading-copy">
+          <a class="back-link" routerLink="/"> Voltar aos resultados </a>
+
+          <h1 id="property-title">
+            {{ property.title }}
+          </h1>
+
+          <p class="property-location">
+            {{ property.location.neighborhood }} ·
+            {{ property.location.city }}
+          </p>
+
+          <p class="property-facts">
+            {{ property.bedrooms }}
+            {{ property.bedrooms === 1 ? 'quarto' : 'quartos' }}
+            · {{ property.area }} m² ·
+            {{ property.parkingSpaces }}
+            {{ property.parkingSpaces === 1 ? 'vaga' : 'vagas' }}
+          </p>
+        </div>
+
+        <div class="price">
+          <span>Valor demonstrativo</span>
+
+          <strong>{{ formattedPrice() }}</strong>
+
+          <small>
+            {{ property.transactionType === 'rent' ? 'por mês' : 'preço de venda' }}
+          </small>
+        </div>
+      </section>
+
+      @if (activeImage(); as image) {
+        <section
+          class="gallery"
+          [class.single-image]="galleryImages().length === 1"
+          aria-label="Galeria do imóvel"
+        >
+          <figure class="gallery-main">
+            <img [src]="image.url" [alt]="image.alt + ' — foto ' + (selectedImageIndex() + 1)" />
+
+            @if (galleryImages().length > 1) {
+              <button
+                class="gallery-arrow previous"
+                type="button"
+                aria-label="Exibir foto anterior"
+                (click)="moveGallery(-1)"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+              </button>
+
+              <button
+                class="gallery-arrow next"
+                type="button"
+                aria-label="Exibir próxima foto"
+                (click)="moveGallery(1)"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+
+              <span class="gallery-counter" aria-live="polite">
+                {{ selectedImageIndex() + 1 }} /
+                {{ galleryImages().length }}
+              </span>
+            }
+
+            <figcaption>
+              <strong>Imagem demonstrativa</strong>
+
+              @if (image.credit) {
+                <span>{{ image.credit }}</span>
+              }
+            </figcaption>
+          </figure>
+
+          @if (galleryImages().length > 1) {
+            <div class="gallery-thumbnails" aria-label="Escolha uma foto">
+              @for (thumbnail of galleryImages(); track thumbnail.url; let index = $index) {
+                <button
+                  type="button"
+                  [class.active]="selectedImageIndex() === index"
+                  [attr.aria-pressed]="selectedImageIndex() === index"
+                  [attr.aria-label]="'Exibir foto ' + (index + 1)"
+                  (click)="selectImage(index)"
+                >
+                  <img [src]="thumbnail.url" alt="" />
+                  <span>Foto {{ index + 1 }}</span>
+                </button>
+              }
+            </div>
+          }
+        </section>
+      }
+
+      <div class="detail-grid">
+        <morada-property-details-content [property]="property" />
+      </div>
+    </article>
+  }
+</main>
