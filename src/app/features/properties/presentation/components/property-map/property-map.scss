@@ -1,0 +1,97 @@
+morada-property-map {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+morada-property-map .map-canvas {
+  width: 100%;
+  min-height: 620px;
+  border-radius: 16px;
+  background: #dbe9eb;
+  overflow: hidden;
+}
+
+morada-property-map .map-canvas:focus-visible {
+  outline: 4px solid var(--morada-focus);
+  outline-offset: -4px;
+}
+
+morada-property-map .map-instructions {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+morada-property-map .leaflet-control-zoom a {
+  color: var(--morada-navy);
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+morada-property-map .leaflet-control-attribution {
+  background: rgba(253, 253, 253, 0.92);
+  color: var(--morada-muted);
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+morada-property-map .morada-marker-shell {
+  border: 0;
+  background: transparent;
+}
+
+morada-property-map .morada-marker {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 12px;
+  background: #256a78;
+  box-shadow: 0 8px 20px rgba(11, 23, 57, 0.3);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  transform: rotate(-45deg);
+  transition:
+    background-color 160ms ease-out,
+    transform 160ms ease-out;
+}
+
+morada-property-map .morada-marker > span {
+  transform: rotate(45deg);
+}
+
+morada-property-map .morada-marker.selected {
+  background: #d95f52;
+  transform: rotate(-45deg) scale(1.14);
+}
+
+morada-property-map .leaflet-marker-icon:focus-visible {
+  outline: 3px solid var(--morada-focus);
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  morada-property-map .map-canvas {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 560px) {
+  morada-property-map .map-canvas {
+    min-height: 430px;
+    border-radius: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  morada-property-map .morada-marker {
+    transition: none;
+  }
+}
