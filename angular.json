@@ -31,7 +31,8 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"]
+            "styles": ["src/styles.scss"],
+            "allowedCommonJsDependencies": ["leaflet"]
           },
           "configurations": {
             "production": {
@@ -85,6 +86,7 @@
               }
             ],
             "styles": ["src/styles.scss"],
+            "allowedCommonJsDependencies": ["leaflet"],
             "customWebpackConfig": {
               "path": "extra-webpack.config.js",
               "libraryName": "morada",
