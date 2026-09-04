@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { PropertyMap } from '../../components/property-map/property-map';
 import type { TransactionType } from '../../../domain/models/property';
 import { PropertySearchStore } from '../../../application/state/property-search.store';
 import { PropertyCard } from '../../components/property-card/property-card';
@@ -9,7 +10,7 @@ import { SiteHeader } from '../../../../../shared/components/site-header/site-he
 
 @Component({
   selector: 'morada-property-search-page',
-  imports: [PropertyCard, PropertySearchForm, SiteHeader],
+  imports: [PropertyMap, PropertyCard, PropertySearchForm, SiteHeader],
   providers: [PropertySearchStore],
   templateUrl: './property-search-page.html',
   styleUrl: './property-search-page.scss',
@@ -19,6 +20,7 @@ export class PropertySearchPage implements OnInit {
   protected readonly demoNotice = signal<string | null>(null);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  protected readonly activeView = signal<'list' | 'map'>('list');
 
   ngOnInit(): void {
     const transactionType = this.route.snapshot.queryParamMap.get('transactionType');

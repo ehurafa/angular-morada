@@ -130,4 +130,30 @@ describe('PropertySearchPage', () => {
 
     expect(navigate).toHaveBeenCalledOnceWith(['/imoveis', 'property-1']);
   });
+
+  it('switches between the property list and map', () => {
+    response.next(SEARCH_RESULT);
+    response.complete();
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const viewButtons = element.querySelectorAll<HTMLButtonElement>('.view-switch button');
+
+    expect(element.querySelector('.property-grid')).not.toBeNull();
+    expect(element.querySelector('morada-property-map')).toBeNull();
+    expect(viewButtons[0].getAttribute('aria-pressed')).toBe('true');
+
+    viewButtons[1].click();
+    fixture.detectChanges();
+
+    expect(element.querySelector('.property-grid')).toBeNull();
+    expect(element.querySelector('morada-property-map')).not.toBeNull();
+    expect(viewButtons[1].getAttribute('aria-pressed')).toBe('true');
+
+    viewButtons[0].click();
+    fixture.detectChanges();
+
+    expect(element.querySelector('.property-grid')).not.toBeNull();
+    expect(element.querySelector('morada-property-map')).toBeNull();
+  });
 });

@@ -33,6 +33,27 @@
           em São Paulo. Preços, anúncios e contatos são sintéticos.
         </p>
       </div>
+
+      <div class="view-switch" role="group" aria-label="Visualização dos resultados">
+        <button
+          type="button"
+          [class.active]="activeView() === 'list'"
+          [attr.aria-pressed]="activeView() === 'list'"
+          (click)="activeView.set('list')"
+        >
+          Lista
+        </button>
+
+        <button
+          type="button"
+          [class.active]="activeView() === 'map'"
+          [attr.aria-pressed]="activeView() === 'map'"
+          [disabled]="store.loading() || store.properties().length === 0"
+          (click)="activeView.set('map')"
+        >
+          Ver no mapa
+        </button>
+      </div>
     </header>
 
     @if (store.loading()) {
@@ -46,6 +67,10 @@
         <p>Tente novamente em alguns instantes.</p>
 
         <button type="button" (click)="store.search()">Tentar novamente</button>
+      </div>
+    } @else if (activeView() === 'map' && store.properties().length > 0) {
+      <div class="map-view">
+        <morada-property-map [properties]="store.properties()" />
       </div>
     } @else {
       <div class="property-grid">
