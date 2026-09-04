@@ -1,0 +1,31 @@
+@let item = property();
+
+<article class="map-preview" [attr.aria-labelledby]="'map-preview-title-' + item.id">
+  @if (firstImage(); as image) {
+    <img [src]="image.url" [alt]="image.alt" />
+  } @else {
+    <div class="image-placeholder" aria-hidden="true"></div>
+  }
+
+  <div class="preview-content">
+    <p class="preview-location">{{ item.location.neighborhood }} · {{ item.location.city }}</p>
+
+    <h3 [id]="'map-preview-title-' + item.id">
+      {{ item.title }}
+    </h3>
+
+    <p class="preview-facts">
+      {{ item.area }} m² · {{ item.bedrooms }}
+      {{ item.bedrooms === 1 ? 'quarto' : 'quartos' }}
+    </p>
+
+    <strong class="preview-price">
+      {{ formattedPrice() }}
+      @if (priceSuffix()) {
+        <small>{{ priceSuffix() }}</small>
+      }
+    </strong>
+
+    <button type="button" (click)="requestDetails()">Ver detalhes</button>
+  </div>
+</article>
