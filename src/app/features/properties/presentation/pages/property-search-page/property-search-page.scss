@@ -118,9 +118,20 @@ a {
   }
 }
 
-.map-view {
+.map-stage {
+  position: relative;
+  overflow: hidden;
   border-radius: 16px;
+  background: #dfe7ee;
   box-shadow: 0 16px 38px rgb(11 23 57 / 12%);
+}
+
+.map-preview-slot {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  z-index: 600;
+  width: min(360px, calc(100% - 44px));
 }
 
 .property-grid {
@@ -238,6 +249,19 @@ a {
 
   .results-section {
     padding-top: 36px;
+  }
+
+  .map-stage {
+    display: grid;
+    gap: 12px;
+    overflow: visible;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .map-preview-slot {
+    position: static;
+    width: 100%;
   }
 
   .property-grid {

@@ -49,7 +49,7 @@
           [class.active]="activeView() === 'map'"
           [attr.aria-pressed]="activeView() === 'map'"
           [disabled]="store.loading() || store.properties().length === 0"
-          (click)="activeView.set('map')"
+          (click)="showMap()"
         >
           Ver no mapa
         </button>
@@ -69,8 +69,21 @@
         <button type="button" (click)="store.search()">Tentar novamente</button>
       </div>
     } @else if (activeView() === 'map' && store.properties().length > 0) {
-      <div class="map-view">
-        <morada-property-map [properties]="store.properties()" />
+      <div class="map-stage">
+        <morada-property-map
+          [properties]="store.properties()"
+          [selectedPropertyId]="selectedPropertyId()"
+          (propertySelected)="selectProperty($event)"
+        />
+
+        @if (selectedProperty(); as property) {
+          <div class="map-preview-slot" aria-live="polite">
+            <morada-property-map-preview
+              [property]="property"
+              (detailsRequested)="openPropertyDetails($event)"
+            />
+          </div>
+        }
       </div>
     } @else {
       <div class="property-grid">
@@ -78,7 +91,7 @@
           <morada-property-card
             [property]="property"
             (detailsRequested)="openPropertyDetails($event)"
-            (mapRequested)="showDemoFeature('Mapa do imóvel')"
+            (mapRequested)="showPropertyOnMap($event)"
           />
         } @empty {
           <div class="state-panel">

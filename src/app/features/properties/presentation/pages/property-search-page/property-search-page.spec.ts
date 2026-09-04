@@ -44,10 +44,29 @@ const PROPERTY: Property = {
   featured: true,
 };
 
+const PROPERTY_TWO: Property = {
+  ...PROPERTY,
+  id: 'property-2',
+  title: 'Casa em Perdizes',
+  type: 'house',
+  price: 1480000,
+  location: {
+    ...PROPERTY.location,
+    neighborhood: 'Perdizes',
+    latitude: -23.5379,
+    longitude: -46.6807,
+  },
+};
+
 const SEARCH_RESULT: PropertySearchResult = {
   properties: [PROPERTY],
   matchType: 'all',
   normalizedQuery: '',
+};
+
+const MAP_SEARCH_RESULT: PropertySearchResult = {
+  ...SEARCH_RESULT,
+  properties: [PROPERTY, PROPERTY_TWO],
 };
 
 describe('PropertySearchPage', () => {
@@ -131,6 +150,50 @@ describe('PropertySearchPage', () => {
     expect(navigate).toHaveBeenCalledOnceWith(['/imoveis', 'property-1']);
   });
 
+  it('opens the selected property on the map from its card', () => {
+    response.next(SEARCH_RESULT);
+    response.complete();
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const cardButtons = element.querySelectorAll<HTMLButtonElement>('.property-actions button');
+
+    cardButtons[1].click();
+    fixture.detectChanges();
+
+    const selectedMarker = element.querySelector('.morada-marker.selected');
+    const preview = element.querySelector('morada-property-map-preview');
+
+    expect(element.querySelector('.property-grid')).toBeNull();
+    expect(element.querySelector('morada-property-map')).not.toBeNull();
+    expect(selectedMarker).not.toBeNull();
+    expect(preview?.textContent).toContain(PROPERTY.title);
+  });
+
+  it('updates the preview when another map marker is selected', () => {
+    response.next(MAP_SEARCH_RESULT);
+    response.complete();
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const viewButtons = element.querySelectorAll<HTMLButtonElement>('.view-switch button');
+
+    viewButtons[1].click();
+    fixture.detectChanges();
+
+    const markerIcons = element.querySelectorAll<HTMLElement>('.leaflet-marker-icon');
+
+    markerIcons[1].click();
+    fixture.detectChanges();
+
+    const selectedMarker = element.querySelector<HTMLElement>('.morada-marker.selected');
+
+    const preview = element.querySelector('morada-property-map-preview');
+
+    expect(selectedMarker?.textContent?.trim()).toBe('2');
+    expect(preview?.textContent).toContain(PROPERTY_TWO.title);
+  });
+
   it('switches between the property list and map', () => {
     response.next(SEARCH_RESULT);
     response.complete();
@@ -148,6 +211,8 @@ describe('PropertySearchPage', () => {
 
     expect(element.querySelector('.property-grid')).toBeNull();
     expect(element.querySelector('morada-property-map')).not.toBeNull();
+    expect(element.querySelector('morada-property-map-preview')).not.toBeNull();
+    expect(element.querySelector('.map-preview-slot')?.textContent).toContain(PROPERTY.title);
     expect(viewButtons[1].getAttribute('aria-pressed')).toBe('true');
 
     viewButtons[0].click();
