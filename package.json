@@ -53,6 +53,7 @@
     "single-spa": ">=4.0.0",
     "single-spa-angular": "^20.1.0",
     "tslib": "^2.3.0",
+    "ws": "^8.21.3",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
