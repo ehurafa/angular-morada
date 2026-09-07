@@ -6,7 +6,7 @@
     "start": "concurrently -k -n WEB,API -c cyan,green \"npm run start:web\" \"npm run start:api\"",
     "start:web": "ng serve --proxy-config proxy.conf.json",
     "start:api": "node --watch mock-server/server.mjs",
-    "test:api": "node --test mock-server/app.test.mjs mock-server/domain/normalize-text.test.mjs mock-server/domain/property-availability-event.test.mjs mock-server/domain/search-properties.test.mjs",
+    "test:api": "node --test mock-server/app.test.mjs mock-server/domain/normalize-text.test.mjs mock-server/domain/property-availability-event.test.mjs mock-server/domain/search-properties.test.mjs mock-server/realtime/property-availability-server.test.mjs",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
