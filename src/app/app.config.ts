@@ -8,6 +8,8 @@ import { provideRouter } from '@angular/router';
 
 import { PropertyDetailsRepository } from './features/properties/application/ports/property-details.repository';
 import { HttpPropertyDetailsRepository } from './features/properties/data-access/http/http-property-details.repository';
+import { PropertyAvailabilityRepository } from './features/properties/application/ports/property-availability.repository';
+import { WebSocketPropertyAvailabilityRepository } from './features/properties/data-access/websocket/websocket-property-availability.repository';
 
 import { API_BASE_URL } from './core/config/api-base-url.token';
 import { PropertySearchRepository } from './features/properties/application/ports/property-search.repository';
@@ -24,6 +26,10 @@ export function createAppConfig(apiBaseUrl: string): ApplicationConfig {
       {
         provide: API_BASE_URL,
         useValue: apiBaseUrl,
+      },
+      {
+        provide: PropertyAvailabilityRepository,
+        useClass: WebSocketPropertyAvailabilityRepository,
       },
       {
         provide: PropertySearchRepository,
