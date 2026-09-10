@@ -1,0 +1,22 @@
+@let item = update();
+
+<aside
+  class="availability-notice"
+  [class.availability-notice--unavailable]="!item.available"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+>
+  <span class="availability-notice__indicator" aria-hidden="true"></span>
+
+  <p>
+    <strong>
+      {{ item.demonstration ? 'Atualização demonstrativa:' : 'Atualização de disponibilidade:' }}
+    </strong>
+
+    <span>
+      {{ item.propertyId }}
+      {{ item.available ? 'está disponível.' : 'não está mais disponível.' }}
+    </span>
+  </p>
+</aside>
