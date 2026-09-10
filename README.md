@@ -22,3 +22,17 @@ Os imóveis, preços e contatos apresentados são fictícios e utilizados apenas
 - Express
 - single-spa
 - Jasmine e Karma
+
+## Disponibilidade em tempo real
+
+Execute `npm start` para iniciar a aplicação e a API local.
+
+Ao abrir `http://localhost:4200`, a aplicação estabelece uma conexão WebSocket
+pelo caminho `/api/property-availability`. O servidor envia uma atualização
+na conexão e depois a cada 10 segundos.
+
+A atualização mais recente aparece em um aviso no canto inferior esquerdo.
+Os eventos são sintéticos e não representam mudanças reais de disponibilidade.
+
+A conexão ainda não possui reconexão automática. Caso a API seja reiniciada,
+recarregue a página para conectar novamente.
