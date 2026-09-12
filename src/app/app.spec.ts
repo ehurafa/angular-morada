@@ -60,6 +60,37 @@ describe('App', () => {
     expect(element.querySelector('morada-property-availability-notice')).toBeNull();
   });
 
+  it('should move focus to the main content when the skip link is activated', () => {
+    fixture.detectChanges();
+
+    const main = document.createElement('main');
+    main.tabIndex = -1;
+    element.appendChild(main);
+
+    const scrollIntoView = spyOn(main, 'scrollIntoView');
+    const link = element.querySelector<HTMLAnchorElement>('.skip-link');
+
+    expect(link).not.toBeNull();
+
+    if (link === null) {
+      return;
+    }
+
+    link.focus();
+    expect(document.activeElement).toBe(link);
+
+    const event = new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+    });
+
+    link.dispatchEvent(event);
+
+    expect(document.activeElement).toBe(main);
+    expect(event.defaultPrevented).toBeTrue();
+    expect(scrollIntoView).toHaveBeenCalledOnceWith({ block: 'start' });
+  });
+
   it('should display the notice when an update arrives', () => {
     fixture.detectChanges();
 

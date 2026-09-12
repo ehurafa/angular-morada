@@ -4,7 +4,7 @@
   (featureRequested)="showDemoFeature($event)"
 />
 
-<main class="property-details-page">
+<main class="property-details-page" tabindex="-1">
   @if (store.loading()) {
     <section class="page-state" aria-busy="true" aria-live="polite">
       <span class="loading-indicator" aria-hidden="true"></span>
