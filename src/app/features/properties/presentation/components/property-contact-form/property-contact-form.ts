@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 type ContactField = 'name' | 'email' | 'message';
@@ -11,6 +11,8 @@ type ContactField = 'name' | 'email' | 'message';
 })
 export class PropertyContactForm {
   private readonly formBuilder = inject(FormBuilder);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly feedback = viewChild<ElementRef<HTMLParagraphElement>>('feedback');
 
   protected readonly submitted = signal(false);
@@ -35,6 +37,13 @@ export class PropertyContactForm {
 
     if (this.contactForm.invalid) {
       this.contactForm.markAllAsTouched();
+      this.changeDetector.detectChanges();
+
+      const firstInvalidField = this.host.nativeElement.querySelector<
+        HTMLInputElement | HTMLTextAreaElement
+      >('input[aria-invalid="true"], textarea[aria-invalid="true"]');
+
+      firstInvalidField?.focus();
       return;
     }
 

@@ -104,4 +104,52 @@ describe('PropertyContactForm', () => {
     expect(message?.value).toBe('Olá, gostaria de agendar uma visita.');
     expect(element.querySelector('form')).not.toBeNull();
   });
+
+  it('focuses the name when multiple required fields are empty', () => {
+    fillField('#contact-message', '');
+
+    submitForm();
+
+    const name = element.querySelector<HTMLInputElement>('#contact-name');
+
+    expect(name).not.toBeNull();
+    expect(document.activeElement).toBe(name);
+    expect(name?.getAttribute('aria-describedby')).toBe('contact-name-error');
+    expect(element.querySelector('#contact-name-error')?.textContent).toContain(
+      'Informe seu nome.',
+    );
+  });
+
+  it('focuses the email when the name is valid', () => {
+    fillField('#contact-name', 'Rafael');
+    fillField('#contact-email', 'email-invalido');
+
+    submitForm();
+
+    const email = element.querySelector<HTMLInputElement>('#contact-email');
+
+    expect(email).not.toBeNull();
+    expect(document.activeElement).toBe(email);
+    expect(email?.getAttribute('aria-describedby')).toBe('contact-email-error');
+    expect(element.querySelector('#contact-email-error')?.textContent).toContain(
+      'Digite um e-mail válido.',
+    );
+  });
+
+  it('focuses the message when the other fields are valid', () => {
+    fillField('#contact-name', 'Rafael');
+    fillField('#contact-email', 'rafael@example.com');
+    fillField('#contact-message', '');
+
+    submitForm();
+
+    const message = element.querySelector<HTMLTextAreaElement>('#contact-message');
+
+    expect(message).not.toBeNull();
+    expect(document.activeElement).toBe(message);
+    expect(message?.getAttribute('aria-describedby')).toBe('contact-message-error');
+    expect(element.querySelector('#contact-message-error')?.textContent).toContain(
+      'Escreva uma mensagem.',
+    );
+  });
 });
