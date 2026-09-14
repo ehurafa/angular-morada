@@ -4,8 +4,8 @@
   <h2 id="contact-title">Agende uma visita</h2>
 
   <p class="contact-description">
-    Preencha seus dados para simular o contato com o anunciante. Nenhuma mensagem sai deste
-    ambiente.
+    Preencha seus dados para simular o contato com o anunciante. Todos os campos são obrigatórios.
+    Nenhuma mensagem sai deste ambiente.
   </p>
 
   @if (submitted()) {
@@ -27,6 +27,7 @@
           id="contact-name"
           type="text"
           formControlName="name"
+          required
           autocomplete="name"
           maxlength="80"
           [attr.aria-invalid]="isInvalid('name')"
@@ -45,6 +46,7 @@
           id="contact-email"
           type="email"
           formControlName="email"
+          required
           autocomplete="email"
           maxlength="160"
           inputmode="email"
@@ -69,6 +71,7 @@
         <textarea
           id="contact-message"
           formControlName="message"
+          required
           rows="5"
           maxlength="1000"
           [attr.aria-invalid]="isInvalid('message')"
