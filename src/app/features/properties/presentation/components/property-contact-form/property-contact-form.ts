@@ -57,5 +57,10 @@ export class PropertyContactForm {
   protected resetContact(): void {
     this.contactForm.reset();
     this.submitted.set(false);
+    this.changeDetector.detectChanges();
+
+    const nameField = this.host.nativeElement.querySelector<HTMLInputElement>('#contact-name');
+
+    nameField?.focus();
   }
 }

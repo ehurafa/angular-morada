@@ -103,6 +103,8 @@ describe('PropertyContactForm', () => {
     expect(email?.value).toBe('');
     expect(message?.value).toBe('Olá, gostaria de agendar uma visita.');
     expect(element.querySelector('form')).not.toBeNull();
+    expect(name).not.toBeNull();
+    expect(document.activeElement).toBe(name);
   });
 
   it('focuses the name when multiple required fields are empty', () => {
