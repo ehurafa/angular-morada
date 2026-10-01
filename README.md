@@ -6,10 +6,13 @@ Aplicação web de busca de imóveis desenvolvida com Angular.
 
 ## Funcionalidades atuais
 
-- Busca de imóveis com filtros
-- Listagem responsiva de resultados
+- Busca de imóveis por localização, finalidade e filtros
+- Listagem responsiva e mapa interativo
+- Detalhes do imóvel com galeria, comodidades e custos
+- Formulário demonstrativo de contato
+- Avisos de disponibilidade em tempo real com reconexão automática
 - API local com dados demonstrativos
-- Suporte para execução como aplicação Angular e microfrontend single-spa
+- Execução como aplicação Angular ou microfrontend single-spa
 - Testes automatizados, lint e formatação
 
 Os imóveis, preços e contatos apresentados são fictícios e utilizados apenas para demonstração.
