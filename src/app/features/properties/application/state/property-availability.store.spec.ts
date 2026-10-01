@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Subject, throwError } from 'rxjs';
 
 import type { PropertyAvailabilityUpdate } from '../../domain/models/property-availability';
@@ -90,4 +90,41 @@ describe('PropertyAvailabilityStore', () => {
     expect(repository.watch).toHaveBeenCalledTimes(2);
     expect(store.status()).toBe('connecting');
   });
+
+  it('reconnects automatically one second after the stream completes', fakeAsync(() => {
+    const firstConnection = new Subject<PropertyAvailabilityUpdate>();
+    const secondConnection = new Subject<PropertyAvailabilityUpdate>();
+
+    repository.watch.and.returnValues(firstConnection, secondConnection);
+
+    store.connect();
+    firstConnection.complete();
+
+    expect(store.status()).toBe('disconnected');
+
+    tick(999);
+    expect(repository.watch).toHaveBeenCalledTimes(1);
+
+    tick(1);
+    expect(repository.watch).toHaveBeenCalledTimes(2);
+    expect(store.status()).toBe('connecting');
+  }));
+
+  it('reconnects automatically after a connection error', fakeAsync(() => {
+    const secondConnection = new Subject<PropertyAvailabilityUpdate>();
+
+    repository.watch.and.returnValues(
+      throwError(() => new Error('Connection unavailable')),
+      secondConnection,
+    );
+
+    store.connect();
+
+    expect(store.status()).toBe('error');
+
+    tick(1000);
+
+    expect(repository.watch).toHaveBeenCalledTimes(2);
+    expect(store.status()).toBe('connecting');
+  }));
 });

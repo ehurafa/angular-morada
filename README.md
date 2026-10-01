@@ -34,5 +34,5 @@ na conexão e depois a cada 10 segundos.
 A atualização mais recente aparece em um aviso no canto inferior esquerdo.
 Os eventos são sintéticos e não representam mudanças reais de disponibilidade.
 
-A conexão ainda não possui reconexão automática. Caso a API seja reiniciada,
-recarregue a página para conectar novamente.
+Se a conexão for encerrada ou falhar, a aplicação tenta se reconectar após 1 segundo.
+Quando a API voltar, novas atualizações são recebidas sem recarregar a página.
