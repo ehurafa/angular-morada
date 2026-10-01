@@ -110,4 +110,45 @@ describe('App', () => {
     expect(notice?.textContent).toContain('não está mais disponível.');
     expect(notice?.textContent).toContain('Atualização demonstrativa:');
   });
+
+  it('should hide a dismissed notice and show the next update', () => {
+    fixture.detectChanges();
+
+    const main = document.createElement('main');
+    main.tabIndex = -1;
+    element.appendChild(main);
+
+    const firstUpdate: PropertyAvailabilityUpdate = {
+      propertyId: 'property-1',
+      available: true,
+      occurredAt: new Date('2026-09-08T12:00:00Z'),
+      demonstration: true,
+    };
+
+    latestUpdate.set(firstUpdate);
+    fixture.detectChanges();
+
+    const dismissButton = element.querySelector<HTMLButtonElement>(
+      'morada-property-availability-notice button',
+    );
+
+    expect(dismissButton?.getAttribute('aria-label')).toBe('Dispensar aviso de disponibilidade');
+
+    dismissButton?.click();
+    fixture.detectChanges();
+
+    expect(document.activeElement).toBe(main);
+    expect(element.querySelector('morada-property-availability-notice')).toBeNull();
+    expect(latestUpdate()).toBe(firstUpdate);
+
+    latestUpdate.set({
+      ...firstUpdate,
+      propertyId: 'property-2',
+    });
+    fixture.detectChanges();
+
+    const nextNotice = element.querySelector('morada-property-availability-notice');
+
+    expect(nextNotice?.textContent).toContain('property-2');
+  });
 });

@@ -1,15 +1,9 @@
 @let item = update();
 
-<aside
-  class="availability-notice"
-  [class.availability-notice--unavailable]="!item.available"
-  role="status"
-  aria-live="polite"
-  aria-atomic="true"
->
+<aside class="availability-notice" [class.availability-notice--unavailable]="!item.available">
   <span class="availability-notice__indicator" aria-hidden="true"></span>
 
-  <p>
+  <p role="status" aria-live="polite" aria-atomic="true">
     <strong>
       {{ item.demonstration ? 'Atualização demonstrativa:' : 'Atualização de disponibilidade:' }}
     </strong>
@@ -19,4 +13,15 @@
       {{ item.available ? 'está disponível.' : 'não está mais disponível.' }}
     </span>
   </p>
+
+  <button
+    class="availability-notice__dismiss"
+    type="button"
+    aria-label="Dispensar aviso de disponibilidade"
+    (click)="dismiss($event)"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M6 6 18 18M18 6 6 18" />
+    </svg>
+  </button>
 </aside>

@@ -35,11 +35,42 @@ p {
   margin: 0;
   font-size: 0.875rem;
   line-height: 1.5;
+  flex: 1;
+  min-width: 0;
 }
 
 strong {
   margin-right: 4px;
   font-weight: 600;
+}
+
+.availability-notice__dismiss {
+  display: grid;
+  flex: 0 0 44px;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -8px -12px -8px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.availability-notice__dismiss:hover {
+  background: rgb(255 255 255 / 12%);
+}
+
+.availability-notice__dismiss svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 2;
 }
 
 @media (max-width: 560px) {

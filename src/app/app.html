@@ -5,5 +5,10 @@
 <router-outlet />
 
 @if (availabilityStore.latestUpdate(); as update) {
-  <morada-property-availability-notice [update]="update" />
+  @if (dismissedUpdate() !== update) {
+    <morada-property-availability-notice
+      [update]="update"
+      (dismissed)="dismissedUpdate.set(update)"
+    />
+  }
 }
