@@ -7,7 +7,10 @@ import WebSocket from 'ws';
 
 import { createPropertyAvailabilityServer } from './property-availability-server.mjs';
 
-const PROPERTIES = [{ id: 'property-1' }, { id: 'property-2' }];
+const PROPERTIES = [
+  { id: 'property-1', title: 'Apartamento com varanda' },
+  { id: 'property-2', title: 'Studio mobiliado' },
+];
 const FIXED_DATE = new Date('2026-09-07T12:00:00.000Z');
 
 async function startFixture() {
@@ -74,6 +77,7 @@ describe('property availability WebSocket server', () => {
       assert.deepEqual(JSON.parse(message.toString()), {
         type: 'property-availability.updated',
         propertyId: 'property-1',
+        propertyTitle: 'Apartamento com varanda',
         available: true,
         occurredAt: '2026-09-07T12:00:00.000Z',
         demonstration: true,
@@ -99,6 +103,7 @@ describe('property availability WebSocket server', () => {
       const event = JSON.parse(message.toString());
 
       assert.equal(event.propertyId, 'property-2');
+      assert.equal(event.propertyTitle, 'Studio mobiliado');
       assert.equal(event.available, true);
     } finally {
       await closeFixture(fixture);

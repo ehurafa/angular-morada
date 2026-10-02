@@ -9,12 +9,14 @@ describe('createPropertyAvailabilityEvent', () => {
 
     const event = createPropertyAvailabilityEvent({
       propertyId: 'property-1',
+      propertyTitle: 'Apartamento com varanda',
       occurredAt,
     });
 
     assert.deepEqual(event, {
       type: 'property-availability.updated',
       propertyId: 'property-1',
+      propertyTitle: 'Apartamento com varanda',
       available: true,
       occurredAt: '2026-09-07T12:00:00.000Z',
       demonstration: true,

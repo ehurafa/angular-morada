@@ -29,6 +29,7 @@ export function createPropertyAvailabilityServer({
 
     return createPropertyAvailabilityEvent({
       propertyId: property.id,
+      propertyTitle: property.title,
       occurredAt: now(),
     });
   }
