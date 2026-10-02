@@ -107,7 +107,8 @@ describe('App', () => {
     const notice = element.querySelector('morada-property-availability-notice');
 
     expect(notice).not.toBeNull();
-    expect(notice?.textContent).toContain('property-1');
+    expect(notice?.textContent).toContain('Apartamento com varanda');
+    expect(notice?.textContent).not.toContain('property-1');
     expect(notice?.textContent).toContain('não está mais disponível.');
     expect(notice?.textContent).toContain('Atualização demonstrativa:');
   });
@@ -152,6 +153,7 @@ describe('App', () => {
 
     const nextNotice = element.querySelector('morada-property-availability-notice');
 
-    expect(nextNotice?.textContent).toContain('property-2');
+    expect(nextNotice?.textContent).toContain('Studio mobiliado');
+    expect(nextNotice?.textContent).not.toContain('property-2');
   });
 });

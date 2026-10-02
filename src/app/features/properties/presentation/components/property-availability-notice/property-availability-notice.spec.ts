@@ -29,10 +29,11 @@ describe('PropertyAvailabilityNotice', () => {
     fixture.detectChanges();
   }
 
-  it('should display an available property', () => {
+  it('should display an available property by title', () => {
     renderUpdate();
 
-    expect(element.textContent).toContain('property-1');
+    expect(element.textContent).toContain('Apartamento com varanda');
+    expect(element.textContent).not.toContain('property-1');
     expect(element.textContent).toContain('está disponível.');
     expect(element.querySelector('.availability-notice--unavailable')).toBeNull();
   });
