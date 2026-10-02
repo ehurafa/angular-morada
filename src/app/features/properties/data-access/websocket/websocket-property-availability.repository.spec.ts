@@ -68,6 +68,7 @@ describe('WebSocketPropertyAvailabilityRepository', () => {
       JSON.stringify({
         type: 'property-availability.updated',
         propertyId: 'property-1',
+        propertyTitle: 'Apartamento com varanda',
         available: true,
         occurredAt: '2026-09-08T12:00:00.000Z',
         demonstration: true,
@@ -77,6 +78,7 @@ describe('WebSocketPropertyAvailabilityRepository', () => {
     expect(updates).toEqual([
       {
         propertyId: 'property-1',
+        propertyTitle: 'Apartamento com varanda',
         available: true,
         occurredAt: new Date('2026-09-08T12:00:00.000Z'),
         demonstration: true,

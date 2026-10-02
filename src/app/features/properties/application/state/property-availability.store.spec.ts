@@ -7,6 +7,7 @@ import { PropertyAvailabilityStore } from './property-availability.store';
 
 const UPDATE: PropertyAvailabilityUpdate = {
   propertyId: 'property-1',
+  propertyTitle: 'Apartamento com varanda',
   available: true,
   occurredAt: new Date('2026-09-08T12:00:00.000Z'),
   demonstration: true,

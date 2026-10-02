@@ -14,6 +14,7 @@ export function mapPropertyAvailabilityEventDto(value: unknown): PropertyAvailab
 
   return {
     propertyId: value.propertyId,
+    propertyTitle: value.propertyTitle,
     available: value.available,
     occurredAt,
     demonstration: value.demonstration,

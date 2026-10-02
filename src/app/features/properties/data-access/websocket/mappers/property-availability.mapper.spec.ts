@@ -5,6 +5,7 @@ describe('mapPropertyAvailabilityEventDto', () => {
     const result = mapPropertyAvailabilityEventDto({
       type: 'property-availability.updated',
       propertyId: 'property-1',
+      propertyTitle: 'Apartamento com varanda',
       available: true,
       occurredAt: '2026-09-07T12:00:00.000Z',
       demonstration: true,
@@ -12,6 +13,7 @@ describe('mapPropertyAvailabilityEventDto', () => {
 
     expect(result).toEqual({
       propertyId: 'property-1',
+      propertyTitle: 'Apartamento com varanda',
       available: true,
       occurredAt: new Date('2026-09-07T12:00:00.000Z'),
       demonstration: true,
@@ -27,10 +29,23 @@ describe('mapPropertyAvailabilityEventDto', () => {
     expect(result).toBeNull();
   });
 
+  it('ignores events without a property title', () => {
+    const result = mapPropertyAvailabilityEventDto({
+      type: 'property-availability.updated',
+      propertyId: 'property-1',
+      available: true,
+      occurredAt: '2026-09-07T12:00:00.000Z',
+      demonstration: true,
+    });
+
+    expect(result).toBeNull();
+  });
+
   it('ignores events with an invalid date', () => {
     const result = mapPropertyAvailabilityEventDto({
       type: 'property-availability.updated',
       propertyId: 'property-1',
+      propertyTitle: 'Apartamento com varanda',
       available: true,
       occurredAt: 'invalid-date',
       demonstration: true,

@@ -96,6 +96,7 @@ describe('App', () => {
 
     latestUpdate.set({
       propertyId: 'property-1',
+      propertyTitle: 'Apartamento com varanda',
       available: false,
       occurredAt: new Date('2026-09-08T12:00:00Z'),
       demonstration: true,
@@ -120,6 +121,7 @@ describe('App', () => {
 
     const firstUpdate: PropertyAvailabilityUpdate = {
       propertyId: 'property-1',
+      propertyTitle: 'Apartamento com varanda',
       available: true,
       occurredAt: new Date('2026-09-08T12:00:00Z'),
       demonstration: true,
@@ -144,6 +146,7 @@ describe('App', () => {
     latestUpdate.set({
       ...firstUpdate,
       propertyId: 'property-2',
+      propertyTitle: 'Studio mobiliado',
     });
     fixture.detectChanges();
 

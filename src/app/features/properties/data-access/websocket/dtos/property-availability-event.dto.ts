@@ -1,6 +1,7 @@
 export interface PropertyAvailabilityEventDto {
   readonly type: 'property-availability.updated';
   readonly propertyId: string;
+  readonly propertyTitle: string;
   readonly available: boolean;
   readonly occurredAt: string;
   readonly demonstration: boolean;
@@ -18,6 +19,7 @@ export function isPropertyAvailabilityEventDto(
   return (
     candidate.type === 'property-availability.updated' &&
     typeof candidate.propertyId === 'string' &&
+    typeof candidate.propertyTitle === 'string' &&
     typeof candidate.available === 'boolean' &&
     typeof candidate.occurredAt === 'string' &&
     typeof candidate.demonstration === 'boolean'
