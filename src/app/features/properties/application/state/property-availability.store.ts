@@ -5,6 +5,9 @@ import { catchError, EMPTY, Subscription, tap, timer } from 'rxjs';
 import type { PropertyAvailabilityUpdate } from '../../domain/models/property-availability';
 import { PropertyAvailabilityRepository } from '../ports/property-availability.repository';
 
+const INITIAL_RECONNECT_DELAY_MS = 1000;
+const MAX_RECONNECT_DELAY_MS = 30_000;
+
 export type PropertyAvailabilityStatus =
   'idle' | 'connecting' | 'connected' | 'disconnected' | 'error';
 
@@ -18,6 +21,7 @@ export class PropertyAvailabilityStore {
   private readonly latestUpdateState = signal<PropertyAvailabilityUpdate | null>(null);
   private readonly statusState = signal<PropertyAvailabilityStatus>('idle');
   private reconnectSubscription: Subscription | null = null;
+  private reconnectAttempts = 0;
 
   readonly latestUpdate = this.latestUpdateState.asReadonly();
   readonly status = this.statusState.asReadonly();
@@ -38,6 +42,7 @@ export class PropertyAvailabilityStore {
       .pipe(
         tap({
           next: (update) => {
+            this.reconnectAttempts = 0;
             this.latestUpdateState.set(update);
             this.statusState.set('connected');
           },
@@ -60,7 +65,14 @@ export class PropertyAvailabilityStore {
   private scheduleReconnect(): void {
     this.reconnectSubscription?.unsubscribe();
 
-    this.reconnectSubscription = timer(1000)
+    const delayMs = Math.min(
+      INITIAL_RECONNECT_DELAY_MS * 2 ** this.reconnectAttempts,
+      MAX_RECONNECT_DELAY_MS,
+    );
+
+    this.reconnectAttempts = Math.min(this.reconnectAttempts + 1, 5);
+
+    this.reconnectSubscription = timer(delayMs)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.reconnectSubscription = null;

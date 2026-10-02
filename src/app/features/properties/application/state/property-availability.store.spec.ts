@@ -128,4 +128,79 @@ describe('PropertyAvailabilityStore', () => {
     expect(repository.watch).toHaveBeenCalledTimes(2);
     expect(store.status()).toBe('connecting');
   }));
+
+  it('waits longer after consecutive connection errors', fakeAsync(() => {
+    const thirdConnection = new Subject<PropertyAvailabilityUpdate>();
+
+    repository.watch.and.returnValues(
+      throwError(() => new Error('First failure')),
+      throwError(() => new Error('Second failure')),
+      thirdConnection,
+    );
+
+    store.connect();
+
+    tick(1000);
+    expect(repository.watch).toHaveBeenCalledTimes(2);
+
+    tick(1999);
+    expect(repository.watch).toHaveBeenCalledTimes(2);
+
+    tick(1);
+    expect(repository.watch).toHaveBeenCalledTimes(3);
+    expect(store.status()).toBe('connecting');
+  }));
+
+  it('returns to the initial delay after receiving an update', fakeAsync(() => {
+    const recoveredConnection = new Subject<PropertyAvailabilityUpdate>();
+    const nextConnection = new Subject<PropertyAvailabilityUpdate>();
+
+    repository.watch.and.returnValues(
+      throwError(() => new Error('Connection unavailable')),
+      recoveredConnection,
+      nextConnection,
+    );
+
+    store.connect();
+    tick(1000);
+
+    recoveredConnection.next(UPDATE);
+    recoveredConnection.complete();
+
+    tick(999);
+    expect(repository.watch).toHaveBeenCalledTimes(2);
+
+    tick(1);
+    expect(repository.watch).toHaveBeenCalledTimes(3);
+    expect(store.status()).toBe('connecting');
+  }));
+
+  it('caps the reconnection delay at 30 seconds', fakeAsync(() => {
+    const finalConnection = new Subject<PropertyAvailabilityUpdate>();
+
+    repository.watch.and.returnValues(
+      throwError(() => new Error('Failure 1')),
+      throwError(() => new Error('Failure 2')),
+      throwError(() => new Error('Failure 3')),
+      throwError(() => new Error('Failure 4')),
+      throwError(() => new Error('Failure 5')),
+      throwError(() => new Error('Failure 6')),
+      finalConnection,
+    );
+
+    store.connect();
+
+    for (const delayMs of [1000, 2000, 4000, 8000, 16000]) {
+      tick(delayMs);
+    }
+
+    expect(repository.watch).toHaveBeenCalledTimes(6);
+
+    tick(29_999);
+    expect(repository.watch).toHaveBeenCalledTimes(6);
+
+    tick(1);
+    expect(repository.watch).toHaveBeenCalledTimes(7);
+    expect(store.status()).toBe('connecting');
+  }));
 });
