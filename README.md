@@ -41,3 +41,18 @@ Se a conexão for encerrada ou falhar, a aplicação tenta se reconectar após 1
 Após falhas consecutivas, o intervalo aumenta até 30 segundos. Uma atualização recebida
 reinicia esse intervalo. Quando a API voltar, novas atualizações são recebidas sem
 recarregar a página.
+
+## Filtros na URL
+
+Ao pesquisar, os filtros ficam registrados no endereço da página.
+Você pode copiar esse endereço para compartilhar a busca ou abri-la novamente.
+
+A localização, a finalidade, o tipo de imóvel, a quantidade mínima
+de quartos e o preço máximo são restaurados ao carregar o endereço.
+
+Os botões Voltar e Avançar do navegador recuperam as buscas anteriores.
+Ao abrir um imóvel, o link “Voltar aos resultados” mantém os filtros
+da busca de origem.
+
+Valores padrão e campos vazios são omitidos da URL.
+Parâmetros de filtro inválidos são tratados com valores padrão seguros.
