@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, Subject } from 'rxjs';
-import { provideRouter, Router } from '@angular/router';
+import { filter, firstValueFrom, of, Subject } from 'rxjs';
+import { NavigationEnd, provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { provideLocationMocks } from '@angular/common/testing';
+import { Location } from '@angular/common';
 
 import { PropertySearchRepository } from '../../../application/ports/property-search.repository';
 import type { Property } from '../../../domain/models/property';
@@ -147,7 +150,9 @@ describe('PropertySearchPage', () => {
 
     detailsButton.click();
 
-    expect(navigate).toHaveBeenCalledOnceWith(['/imoveis', 'property-1']);
+    expect(navigate).toHaveBeenCalledOnceWith(['/imoveis', 'property-1'], {
+      queryParamsHandling: 'preserve',
+    });
   });
 
   it('opens the selected property on the map from its card', () => {
@@ -220,5 +225,260 @@ describe('PropertySearchPage', () => {
 
     expect(element.querySelector('.property-grid')).not.toBeNull();
     expect(element.querySelector('morada-property-map')).toBeNull();
+  });
+});
+
+describe('PropertySearchPage URL filters', () => {
+  it('restores all URL filters before the initial search', async () => {
+    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
+      'search',
+    ]);
+    repository.search.and.returnValue(of(SEARCH_RESULT));
+
+    await TestBed.configureTestingModule({
+      imports: [PropertySearchPage],
+      providers: [
+        provideRouter([{ path: '', component: PropertySearchPage }]),
+        {
+          provide: PropertySearchRepository,
+          useValue: repository,
+        },
+      ],
+    }).compileComponents();
+
+    await RouterTestingHarness.create(
+      '/?transactionType=rent&query=Pinheiros&propertyType=apartment&minimumBedrooms=2&maximumPrice=5000',
+    );
+
+    expect(repository.search).toHaveBeenCalledOnceWith({
+      transactionType: 'rent',
+      query: 'Pinheiros',
+      propertyType: 'apartment',
+      minimumBedrooms: 2,
+      maximumPrice: 5000,
+    });
+  });
+
+  it('updates the search when URL filters change on the same page', async () => {
+    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
+      'search',
+    ]);
+    repository.search.and.returnValue(of(SEARCH_RESULT));
+
+    await TestBed.configureTestingModule({
+      imports: [PropertySearchPage],
+      providers: [
+        provideRouter([{ path: '', component: PropertySearchPage }]),
+        {
+          provide: PropertySearchRepository,
+          useValue: repository,
+        },
+      ],
+    }).compileComponents();
+
+    const harness = await RouterTestingHarness.create();
+    const firstPage = await harness.navigateByUrl(
+      '/?transactionType=rent&query=Pinheiros&propertyType=apartment&minimumBedrooms=2&maximumPrice=5000',
+      PropertySearchPage,
+    );
+
+    repository.search.calls.reset();
+
+    const secondPage = await harness.navigateByUrl('/?query=Perdizes', PropertySearchPage);
+
+    expect(secondPage).toBe(firstPage);
+    expect(repository.search).toHaveBeenCalledOnceWith({
+      transactionType: 'sale',
+      query: 'Perdizes',
+      propertyType: null,
+      minimumBedrooms: null,
+      maximumPrice: null,
+    });
+  });
+
+  it('updates the URL and searches once when the form is submitted', async () => {
+    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
+      'search',
+    ]);
+    repository.search.and.returnValue(of(SEARCH_RESULT));
+
+    await TestBed.configureTestingModule({
+      imports: [PropertySearchPage],
+      providers: [
+        provideRouter([{ path: '', component: PropertySearchPage }]),
+        {
+          provide: PropertySearchRepository,
+          useValue: repository,
+        },
+      ],
+    }).compileComponents();
+
+    const harness = await RouterTestingHarness.create('/');
+    const router = TestBed.inject(Router);
+    const element = harness.routeNativeElement!;
+    const input = element.querySelector<HTMLInputElement>('#property-location')!;
+    const form = element.querySelector<HTMLFormElement>('form[role="search"]')!;
+
+    repository.search.calls.reset();
+
+    input.value = 'Pinheiros';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    harness.detectChanges();
+
+    expect(repository.search).not.toHaveBeenCalled();
+
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(router.parseUrl(router.url).queryParams).toEqual({
+      query: 'Pinheiros',
+    });
+    expect(repository.search).toHaveBeenCalledOnceWith({
+      ...INITIAL_FILTERS,
+      query: 'Pinheiros',
+    });
+  });
+
+  it('searches again when the submitted filters match the current URL', async () => {
+    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
+      'search',
+    ]);
+    repository.search.and.returnValue(of(SEARCH_RESULT));
+
+    await TestBed.configureTestingModule({
+      imports: [PropertySearchPage],
+      providers: [
+        provideRouter([{ path: '', component: PropertySearchPage }]),
+        {
+          provide: PropertySearchRepository,
+          useValue: repository,
+        },
+      ],
+    }).compileComponents();
+
+    const harness = await RouterTestingHarness.create('/?query=Pinheiros');
+    const router = TestBed.inject(Router);
+    const originalUrl = router.url;
+    const form = harness.routeNativeElement!.querySelector<HTMLFormElement>('form[role="search"]')!;
+
+    repository.search.calls.reset();
+
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(router.url).toBe(originalUrl);
+    expect(repository.search).toHaveBeenCalledOnceWith({
+      ...INITIAL_FILTERS,
+      query: 'Pinheiros',
+    });
+  });
+
+  it('updates the URL when rent is selected in the header', async () => {
+    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
+      'search',
+    ]);
+    repository.search.and.returnValue(of(SEARCH_RESULT));
+
+    await TestBed.configureTestingModule({
+      imports: [PropertySearchPage],
+      providers: [
+        provideRouter([{ path: '', component: PropertySearchPage }]),
+        {
+          provide: PropertySearchRepository,
+          useValue: repository,
+        },
+      ],
+    }).compileComponents();
+
+    const harness = await RouterTestingHarness.create('/?query=Pinheiros');
+    const router = TestBed.inject(Router);
+    const buttons = harness.routeNativeElement!.querySelectorAll<HTMLButtonElement>(
+      'morada-site-header nav button',
+    );
+    const rentButton = Array.from(buttons).find(
+      (button) => button.textContent?.trim() === 'Alugar',
+    )!;
+
+    repository.search.calls.reset();
+
+    rentButton.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(router.parseUrl(router.url).queryParams).toEqual({
+      transactionType: 'rent',
+      query: 'Pinheiros',
+    });
+    expect(repository.search).toHaveBeenCalledOnceWith({
+      ...INITIAL_FILTERS,
+      transactionType: 'rent',
+      query: 'Pinheiros',
+    });
+  });
+
+  it('restores filters when navigating back and forward', async () => {
+    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
+      'search',
+    ]);
+    repository.search.and.returnValue(of(SEARCH_RESULT));
+
+    await TestBed.configureTestingModule({
+      imports: [PropertySearchPage],
+      providers: [
+        provideRouter([{ path: '', component: PropertySearchPage }]),
+        provideLocationMocks(),
+        {
+          provide: PropertySearchRepository,
+          useValue: repository,
+        },
+      ],
+    }).compileComponents();
+
+    const harness = await RouterTestingHarness.create('/?query=Pinheiros');
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    router.setUpLocationChangeListener();
+
+    await harness.navigateByUrl('/?transactionType=rent&query=Perdizes');
+
+    repository.search.calls.reset();
+
+    const backNavigation = firstValueFrom(
+      router.events.pipe(filter((event) => event instanceof NavigationEnd)),
+    );
+
+    location.back();
+    await backNavigation;
+    harness.detectChanges();
+
+    expect(repository.search).toHaveBeenCalledOnceWith({
+      ...INITIAL_FILTERS,
+      query: 'Pinheiros',
+    });
+    expect(
+      harness.routeNativeElement!.querySelector<HTMLInputElement>('#property-location')!.value,
+    ).toBe('Pinheiros');
+
+    repository.search.calls.reset();
+
+    const forwardNavigation = firstValueFrom(
+      router.events.pipe(filter((event) => event instanceof NavigationEnd)),
+    );
+
+    location.forward();
+    await forwardNavigation;
+    harness.detectChanges();
+
+    expect(repository.search).toHaveBeenCalledOnceWith({
+      ...INITIAL_FILTERS,
+      transactionType: 'rent',
+      query: 'Perdizes',
+    });
+    expect(
+      harness.routeNativeElement!.querySelector<HTMLInputElement>('#property-location')!.value,
+    ).toBe('Perdizes');
   });
 });

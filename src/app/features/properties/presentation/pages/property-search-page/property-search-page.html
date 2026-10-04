@@ -16,7 +16,7 @@
           [filters]="store.filters()"
           [loading]="store.loading()"
           (filtersChanged)="store.updateFilters($event)"
-          (searchRequested)="store.search()"
+          (searchRequested)="search()"
         />
       </div>
     </div>

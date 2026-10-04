@@ -33,7 +33,9 @@
 
       <section class="property-heading" aria-labelledby="property-title">
         <div class="heading-copy">
-          <a class="back-link" routerLink="/"> Voltar aos resultados </a>
+          <a class="back-link" routerLink="/" queryParamsHandling="preserve">
+            Voltar aos resultados
+          </a>
 
           <h1 id="property-title">
             {{ property.title }}

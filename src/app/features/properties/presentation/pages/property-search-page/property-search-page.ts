@@ -1,5 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  createPropertySearchQueryParams,
+  readPropertySearchFilters,
+} from './property-search-query-params';
 
 import { PropertyMap } from '../../components/property-map/property-map';
 import type { TransactionType } from '../../../domain/models/property';
@@ -21,6 +27,7 @@ export class PropertySearchPage implements OnInit {
   protected readonly demoNotice = signal<string | null>(null);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly activeView = signal<'list' | 'map'>('list');
   protected readonly selectedPropertyId = signal<string | null>(null);
 
@@ -35,20 +42,32 @@ export class PropertySearchPage implements OnInit {
   });
 
   ngOnInit(): void {
-    const transactionType = this.route.snapshot.queryParamMap.get('transactionType');
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      this.store.updateFilters(readPropertySearchFilters(params));
+      this.store.search();
+    });
+  }
 
-    if (transactionType === 'sale' || transactionType === 'rent') {
-      this.store.updateFilters({
-        transactionType,
-      });
+  protected search(): void {
+    const filters = this.store.filters();
+    const urlTree = this.router.createUrlTree([], {
+      relativeTo: this.route,
+      queryParams: createPropertySearchQueryParams(filters),
+      preserveFragment: true,
+    });
+
+    if (this.router.serializeUrl(urlTree) === this.router.url) {
+      this.store.updateFilters({ query: filters.query.trim() });
+      this.store.search();
+      return;
     }
 
-    this.store.search();
+    void this.router.navigateByUrl(urlTree);
   }
 
   protected selectTransactionType(transactionType: TransactionType): void {
     this.store.updateFilters({ transactionType });
-    this.store.search();
+    this.search();
   }
 
   protected showDemoFeature(feature: string): void {
@@ -56,7 +75,9 @@ export class PropertySearchPage implements OnInit {
   }
 
   protected openPropertyDetails(propertyId: string): void {
-    void this.router.navigate(['/imoveis', propertyId]);
+    void this.router.navigate(['/imoveis', propertyId], {
+      queryParamsHandling: 'preserve',
+    });
   }
 
   protected showMap(): void {
