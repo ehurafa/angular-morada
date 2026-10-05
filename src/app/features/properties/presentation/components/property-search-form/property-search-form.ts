@@ -1,4 +1,5 @@
 import { Component, input, output } from '@angular/core';
+import type { LocationSuggestion } from '../../../domain/models/location-suggestion';
 
 import type { PropertyType, TransactionType } from '../../../domain/models/property';
 import type { PropertySearchFilters } from '../../../domain/models/property-search';
@@ -11,6 +12,7 @@ import type { PropertySearchFilters } from '../../../domain/models/property-sear
 export class PropertySearchForm {
   readonly filters = input.required<PropertySearchFilters>();
   readonly loading = input(false);
+  readonly locations = input<readonly LocationSuggestion[]>([]);
 
   readonly filtersChanged = output<Partial<PropertySearchFilters>>();
   readonly searchRequested = output<void>();

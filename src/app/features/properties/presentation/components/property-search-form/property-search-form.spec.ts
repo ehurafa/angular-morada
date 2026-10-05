@@ -117,4 +117,29 @@ describe('PropertySearchForm', () => {
       { maximumPrice: null },
     ]);
   });
+
+  it('offers catalog neighborhoods while preserving free-text search', () => {
+    fixture.componentRef.setInput('locations', [
+      { label: 'Pinheiros', kind: 'bairro' },
+      { label: 'Vila Madalena', kind: 'bairro' },
+    ]);
+    fixture.detectChanges();
+
+    const changes: Partial<PropertySearchFilters>[] = [];
+    component.filtersChanged.subscribe((change) => changes.push(change));
+
+    const element = fixture.nativeElement as HTMLElement;
+    const input = element.querySelector<HTMLInputElement>('#property-location')!;
+    const options = element.querySelectorAll<HTMLOptionElement>(
+      '#property-location-options option',
+    );
+
+    expect(input.getAttribute('list')).toBe('property-location-options');
+    expect(Array.from(options, (option) => option.value)).toEqual(['Pinheiros', 'Vila Madalena']);
+
+    input.value = 'Outro bairro';
+    input.dispatchEvent(new Event('input'));
+
+    expect(changes).toEqual([{ query: 'Outro bairro' }]);
+  });
 });

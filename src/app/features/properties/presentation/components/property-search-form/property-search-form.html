@@ -24,6 +24,7 @@
 
     <input
       id="property-location"
+      list="property-location-options"
       name="query"
       type="search"
       autocomplete="off"
@@ -31,6 +32,11 @@
       [value]="filters().query"
       (input)="updateQuery($event)"
     />
+    <datalist id="property-location-options">
+      @for (location of locations(); track location.label) {
+        <option [value]="location.label"></option>
+      }
+    </datalist>
   </div>
 
   <div>
