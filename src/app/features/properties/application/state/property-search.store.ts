@@ -5,6 +5,7 @@ import { catchError, EMPTY, finalize, Subject, switchMap, tap } from 'rxjs';
 import { PropertySearchRepository } from '../ports/property-search.repository';
 import type { Property } from '../../domain/models/property';
 import type { PropertySearchFilters, SearchMatchType } from '../../domain/models/property-search';
+import type { LocationSuggestion } from '../../domain/models/location-suggestion';
 
 export type PropertySearchError = 'search-failed';
 
@@ -28,6 +29,7 @@ export class PropertySearchStore {
   private readonly normalizedQueryState = signal('');
   private readonly loadingState = signal(false);
   private readonly errorState = signal<PropertySearchError | null>(null);
+  private readonly locationsState = signal<readonly LocationSuggestion[]>([]);
 
   readonly filters = this.filtersState.asReadonly();
   readonly properties = this.propertiesState.asReadonly();
@@ -35,6 +37,7 @@ export class PropertySearchStore {
   readonly normalizedQuery = this.normalizedQueryState.asReadonly();
   readonly loading = this.loadingState.asReadonly();
   readonly error = this.errorState.asReadonly();
+  readonly locations = this.locationsState.asReadonly();
 
   readonly hasResults = computed(() => this.properties().length > 0);
 
@@ -70,6 +73,16 @@ export class PropertySearchStore {
 
   resetFilters(): void {
     this.filtersState.set(INITIAL_FILTERS);
+  }
+
+  loadLocations(): void {
+    this.repository
+      .listLocations()
+      .pipe(
+        catchError(() => EMPTY),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((locations) => this.locationsState.set(locations));
   }
 
   search(): void {

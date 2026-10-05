@@ -61,6 +61,7 @@ describe('PropertySearchStore', () => {
   beforeEach(() => {
     repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
       'search',
+      'listLocations',
     ]);
 
     TestBed.configureTestingModule({
@@ -164,5 +165,38 @@ describe('PropertySearchStore', () => {
 
     expect(store.normalizedQuery()).toBe('segunda busca');
     expect(store.loading()).toBeFalse();
+  });
+
+  it('loads location suggestions without changing the search state', () => {
+    const response = new Subject<readonly { label: string; kind: 'bairro' }[]>();
+
+    repository.listLocations.and.returnValue(response);
+
+    store.loadLocations();
+
+    expect(repository.listLocations).toHaveBeenCalledTimes(1);
+    expect(store.locations()).toEqual([]);
+    expect(store.loading()).toBeFalse();
+
+    response.next([{ label: 'Pinheiros', kind: 'bairro' }]);
+    response.complete();
+
+    expect(store.locations()).toEqual([{ label: 'Pinheiros', kind: 'bairro' }]);
+    expect(store.loading()).toBeFalse();
+  });
+
+  it('keeps text search available when location suggestions fail', () => {
+    repository.listLocations.and.returnValue(throwError(() => new Error('Locations unavailable')));
+    repository.search.and.returnValue(new Subject<PropertySearchResult>());
+
+    store.loadLocations();
+
+    expect(store.locations()).toEqual([]);
+    expect(store.error()).toBeNull();
+
+    store.search();
+
+    expect(repository.search).toHaveBeenCalledOnceWith(INITIAL_FILTERS);
+    expect(store.loading()).toBeTrue();
   });
 });
