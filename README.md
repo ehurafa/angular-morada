@@ -44,9 +44,11 @@ recarregar a página.
 
 ## Sugestões de localização
 
-O campo de localização sugere bairros presentes no catálogo demonstrativo.
-A sugestão é opcional: você pode digitar qualquer lugar. Se a lista não carregar,
-a busca por texto continua funcionando.
+O campo de localização sugere bairros, ruas e estações de metrô do catálogo
+demonstrativo. Ruas e estações só aparecem quando há um imóvel associado.
+
+As sugestões são opcionais: você pode digitar qualquer lugar. Se a lista
+não carregar, a busca por texto continua funcionando.
 
 ## Filtros na URL
 

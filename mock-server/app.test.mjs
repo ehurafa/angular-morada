@@ -5,6 +5,9 @@ import request from 'supertest';
 
 import { createApp } from './app.mjs';
 
+import { PROPERTIES } from './data/properties.mjs';
+import { LOCATION_CATALOG } from './data/location-catalog.mjs';
+
 const CATALOG = [
   {
     id: 'property-1',
@@ -123,5 +126,42 @@ describe('GET /api/locations', () => {
       { label: 'Pinheiros', kind: 'bairro' },
       { label: 'Vila Madalena', kind: 'bairro' },
     ]);
+  });
+
+  it('lists neighborhoods, streets and metro stations from the real catalog', async () => {
+    const app = createApp({ properties: PROPERTIES });
+
+    const response = await request(app).get('/api/locations').expect(200);
+
+    assert.deepEqual(response.body, [
+      { label: 'Avenida Paulista', kind: 'rua' },
+      { label: 'Consolação', kind: 'bairro' },
+      { label: 'Metrô Faria Lima', kind: 'metrô' },
+      { label: 'Metrô Sumaré', kind: 'metrô' },
+      { label: 'Perdizes', kind: 'bairro' },
+      { label: 'Pinheiros', kind: 'bairro' },
+      { label: 'Rua Augusta', kind: 'rua' },
+      { label: 'Vila Madalena', kind: 'bairro' },
+    ]);
+  });
+
+  it('finds the associated property for every suggested street and metro station', async () => {
+    const app = createApp({ properties: PROPERTIES });
+
+    for (const { label, propertyId } of LOCATION_CATALOG) {
+      const property = PROPERTIES.find(({ id }) => id === propertyId);
+      assert.ok(property, `Imóvel ausente para ${label}`);
+
+      const response = await request(app)
+        .get('/api/properties')
+        .query({ businessType: property.businessType, query: label })
+        .expect(200);
+
+      assert.equal(response.body.matchType, 'exact', label);
+      assert.ok(
+        response.body.items.some(({ id }) => id === propertyId),
+        label,
+      );
+    }
   });
 });

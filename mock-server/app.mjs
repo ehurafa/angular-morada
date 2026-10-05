@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import { normalizeText } from './domain/normalize-text.mjs';
+import { LOCATION_CATALOG } from './data/location-catalog.mjs';
 
 import { searchProperties } from './domain/search-properties.mjs';
 
@@ -63,9 +64,14 @@ export function createApp({ allowedOrigins = DEFAULT_ALLOWED_ORIGINS, properties
       }
     }
 
-    const locations = [...neighborhoods.values()]
-      .sort((left, right) => left.localeCompare(right, 'pt-BR'))
-      .map((label) => ({ label, kind: 'bairro' }));
+    const propertyIds = new Set(properties.map(({ id }) => id));
+
+    const locations = [
+      ...[...neighborhoods.values()].map((label) => ({ label, kind: 'bairro' })),
+      ...LOCATION_CATALOG.filter(({ propertyId }) => propertyIds.has(propertyId)).map(
+        ({ label, kind }) => ({ label, kind }),
+      ),
+    ].sort((left, right) => left.label.localeCompare(right.label, 'pt-BR'));
 
     response.json(locations);
   });
