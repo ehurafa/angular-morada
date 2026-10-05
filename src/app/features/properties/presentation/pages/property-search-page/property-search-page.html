@@ -15,6 +15,7 @@
         <morada-property-search-form
           [filters]="store.filters()"
           [loading]="store.loading()"
+          [locations]="store.locations()"
           (filtersChanged)="store.updateFilters($event)"
           (searchRequested)="search()"
         />

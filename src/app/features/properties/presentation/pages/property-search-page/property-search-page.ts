@@ -42,6 +42,7 @@ export class PropertySearchPage implements OnInit {
   });
 
   ngOnInit(): void {
+    this.store.loadLocations();
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.store.updateFilters(readPropertySearchFilters(params));
       this.store.search();

@@ -72,6 +72,17 @@ const MAP_SEARCH_RESULT: PropertySearchResult = {
   properties: [PROPERTY, PROPERTY_TWO],
 };
 
+function createRepositorySpy(): jasmine.SpyObj<PropertySearchRepository> {
+  const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
+    'search',
+    'listLocations',
+  ]);
+
+  repository.listLocations.and.returnValue(of([{ label: 'Pinheiros', kind: 'bairro' as const }]));
+
+  return repository;
+}
+
 describe('PropertySearchPage', () => {
   let fixture: ComponentFixture<PropertySearchPage>;
   let repository: jasmine.SpyObj<PropertySearchRepository>;
@@ -79,9 +90,7 @@ describe('PropertySearchPage', () => {
   let router: Router;
 
   beforeEach(async () => {
-    repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
-      'search',
-    ]);
+    repository = createRepositorySpy();
     response = new Subject<PropertySearchResult>();
     repository.search.and.returnValue(response);
 
@@ -226,13 +235,22 @@ describe('PropertySearchPage', () => {
     expect(element.querySelector('.property-grid')).not.toBeNull();
     expect(element.querySelector('morada-property-map')).toBeNull();
   });
+
+  it('loads and displays neighborhood suggestions when the page opens', () => {
+    expect(repository.listLocations).toHaveBeenCalledTimes(1);
+
+    const element = fixture.nativeElement as HTMLElement;
+    const options = element.querySelectorAll<HTMLOptionElement>(
+      '#property-location-options option',
+    );
+
+    expect(Array.from(options, (option) => option.value)).toEqual(['Pinheiros']);
+  });
 });
 
 describe('PropertySearchPage URL filters', () => {
   it('restores all URL filters before the initial search', async () => {
-    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
-      'search',
-    ]);
+    const repository = createRepositorySpy();
     repository.search.and.returnValue(of(SEARCH_RESULT));
 
     await TestBed.configureTestingModule({
@@ -260,9 +278,7 @@ describe('PropertySearchPage URL filters', () => {
   });
 
   it('updates the search when URL filters change on the same page', async () => {
-    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
-      'search',
-    ]);
+    const repository = createRepositorySpy();
     repository.search.and.returnValue(of(SEARCH_RESULT));
 
     await TestBed.configureTestingModule({
@@ -297,9 +313,7 @@ describe('PropertySearchPage URL filters', () => {
   });
 
   it('updates the URL and searches once when the form is submitted', async () => {
-    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
-      'search',
-    ]);
+    const repository = createRepositorySpy();
     repository.search.and.returnValue(of(SEARCH_RESULT));
 
     await TestBed.configureTestingModule({
@@ -341,9 +355,7 @@ describe('PropertySearchPage URL filters', () => {
   });
 
   it('searches again when the submitted filters match the current URL', async () => {
-    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
-      'search',
-    ]);
+    const repository = createRepositorySpy();
     repository.search.and.returnValue(of(SEARCH_RESULT));
 
     await TestBed.configureTestingModule({
@@ -376,9 +388,7 @@ describe('PropertySearchPage URL filters', () => {
   });
 
   it('updates the URL when rent is selected in the header', async () => {
-    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
-      'search',
-    ]);
+    const repository = createRepositorySpy();
     repository.search.and.returnValue(of(SEARCH_RESULT));
 
     await TestBed.configureTestingModule({
@@ -419,9 +429,7 @@ describe('PropertySearchPage URL filters', () => {
   });
 
   it('restores filters when navigating back and forward', async () => {
-    const repository = jasmine.createSpyObj<PropertySearchRepository>('PropertySearchRepository', [
-      'search',
-    ]);
+    const repository = createRepositorySpy();
     repository.search.and.returnValue(of(SEARCH_RESULT));
 
     await TestBed.configureTestingModule({
