@@ -108,4 +108,16 @@ describe('HttpPropertySearchRepository', () => {
 
     await resultPromise;
   });
+
+  it('loads location suggestions from the API', async () => {
+    const resultPromise = firstValueFrom(repository.listLocations());
+
+    const request = httpTesting.expectOne('https://api.example.test/locations');
+
+    expect(request.request.method).toBe('GET');
+
+    request.flush([{ label: 'Pinheiros', kind: 'bairro' }]);
+
+    expect(await resultPromise).toEqual([{ label: 'Pinheiros', kind: 'bairro' }]);
+  });
 });

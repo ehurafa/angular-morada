@@ -1,5 +1,6 @@
 import type { Observable } from 'rxjs';
 
+import type { LocationSuggestion } from '../../domain/models/location-suggestion';
 import type {
   PropertySearchFilters,
   PropertySearchResult,
@@ -7,4 +8,5 @@ import type {
 
 export abstract class PropertySearchRepository {
   abstract search(filters: PropertySearchFilters): Observable<PropertySearchResult>;
+  abstract listLocations(): Observable<readonly LocationSuggestion[]>;
 }

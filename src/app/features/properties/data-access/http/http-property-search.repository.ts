@@ -14,6 +14,8 @@ import type {
   ApiTransactionType,
   PropertySearchResponseDto,
 } from './dtos/property-search-response.dto';
+import type { LocationSuggestion } from '../../domain/models/location-suggestion';
+
 import { mapPropertySearchResponseDto } from './mappers/property.mapper';
 
 const API_TRANSACTION_TYPE_MAP = {
@@ -33,6 +35,7 @@ export class HttpPropertySearchRepository extends PropertySearchRepository {
   private readonly http = inject(HttpClient);
   private readonly apiBaseUrl = inject(API_BASE_URL).replace(/\/+$/, '');
   private readonly propertiesUrl = `${this.apiBaseUrl}/properties`;
+  private readonly locationsUrl = `${this.apiBaseUrl}/locations`;
 
   override search(filters: PropertySearchFilters): Observable<PropertySearchResult> {
     return this.http
@@ -40,6 +43,10 @@ export class HttpPropertySearchRepository extends PropertySearchRepository {
         params: this.buildParams(filters),
       })
       .pipe(map(mapPropertySearchResponseDto));
+  }
+
+  override listLocations(): Observable<readonly LocationSuggestion[]> {
+    return this.http.get<readonly LocationSuggestion[]>(this.locationsUrl);
   }
 
   private buildParams(filters: PropertySearchFilters): HttpParams {
