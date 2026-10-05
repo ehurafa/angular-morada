@@ -109,3 +109,19 @@ describe('GET /api/properties/:id', () => {
     });
   });
 });
+
+describe('GET /api/locations', () => {
+  it('lists each catalog neighborhood once in alphabetical order', async () => {
+    const app = createApp({
+      properties: [...CATALOG, { ...CATALOG[0], id: 'property-4' }],
+    });
+
+    const response = await request(app).get('/api/locations').expect(200);
+
+    assert.deepEqual(response.body, [
+      { label: 'Consolação', kind: 'bairro' },
+      { label: 'Pinheiros', kind: 'bairro' },
+      { label: 'Vila Madalena', kind: 'bairro' },
+    ]);
+  });
+});

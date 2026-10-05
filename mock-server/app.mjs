@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import { normalizeText } from './domain/normalize-text.mjs';
 
 import { searchProperties } from './domain/search-properties.mjs';
 
@@ -45,6 +46,29 @@ export function createApp({ allowedOrigins = DEFAULT_ALLOWED_ORIGINS, properties
       limit: '100kb',
     }),
   );
+
+  app.get('/api/locations', (_request, response) => {
+    const neighborhoods = new Map();
+
+    for (const { neighborhood } of properties) {
+      if (typeof neighborhood !== 'string') {
+        continue;
+      }
+
+      const label = neighborhood.trim();
+      const key = normalizeText(label);
+
+      if (key && !neighborhoods.has(key)) {
+        neighborhoods.set(key, label);
+      }
+    }
+
+    const locations = [...neighborhoods.values()]
+      .sort((left, right) => left.localeCompare(right, 'pt-BR'))
+      .map((label) => ({ label, kind: 'bairro' }));
+
+    response.json(locations);
+  });
 
   app.get('/api/properties', (request, response) => {
     const result = searchProperties(properties, {
