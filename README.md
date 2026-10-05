@@ -42,6 +42,12 @@ Após falhas consecutivas, o intervalo aumenta até 30 segundos. Uma atualizaç�
 reinicia esse intervalo. Quando a API voltar, novas atualizações são recebidas sem
 recarregar a página.
 
+## Sugestões de localização
+
+O campo de localização sugere bairros presentes no catálogo demonstrativo.
+A sugestão é opcional: você pode digitar qualquer lugar. Se a lista não carregar,
+a busca por texto continua funcionando.
+
 ## Filtros na URL
 
 Ao pesquisar, os filtros ficam registrados no endereço da página.
