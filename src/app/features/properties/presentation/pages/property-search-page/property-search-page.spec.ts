@@ -127,6 +127,43 @@ describe('PropertySearchPage', () => {
     expect(article.textContent).toContain('82 m²');
   });
 
+  it('explains when the search shows nearby alternatives', () => {
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.querySelector('.nearby-feedback')).toBeNull();
+
+    response.next({
+      ...SEARCH_RESULT,
+      matchType: 'nearby',
+      normalizedQuery: 'xpto',
+    });
+    response.complete();
+    fixture.detectChanges();
+
+    const notice = element.querySelector<HTMLElement>('.nearby-feedback');
+
+    expect(notice?.getAttribute('role')).toBe('status');
+    expect(notice?.textContent).toContain('Não encontramos imóveis para essa localização.');
+    expect(notice?.textContent).toContain('respeitam seus filtros.');
+    expect(element.querySelector('article')).not.toBeNull();
+  });
+
+  it('does not show the alternative-results notice when no properties remain', () => {
+    response.next({
+      ...SEARCH_RESULT,
+      properties: [],
+      matchType: 'nearby',
+      normalizedQuery: 'xpto',
+    });
+    response.complete();
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.querySelector('.nearby-feedback')).toBeNull();
+    expect(element.textContent).toContain('Nenhum imóvel com esses filtros');
+  });
+
   it('allows another attempt after a search error', () => {
     response.error(new Error('Network unavailable'));
     fixture.detectChanges();

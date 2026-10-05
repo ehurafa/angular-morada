@@ -50,6 +50,15 @@ demonstrativo. Ruas e estações só aparecem quando há um imóvel associado.
 As sugestões são opcionais: você pode digitar qualquer lugar. Se a lista
 não carregar, a busca por texto continua funcionando.
 
+## Localização sem correspondência
+
+Quando a localização digitada não corresponde a um imóvel elegível, a busca
+mostra outras opções em São Paulo e avisa sobre essa mudança. As alternativas
+continuam respeitando finalidade, tipo de imóvel, quartos e preço máximo.
+
+Se nenhum imóvel satisfizer esses filtros, a página mostra o estado vazio
+em vez de anunciar alternativas.
+
 ## Filtros na URL
 
 Ao pesquisar, os filtros ficam registrados no endereço da página.

@@ -87,6 +87,24 @@ a {
   }
 }
 
+.nearby-feedback {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--morada-sky);
+  line-height: 1.5;
+
+  strong {
+    display: block;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--morada-muted);
+  }
+}
+
 .view-switch {
   flex: 0 0 auto;
   padding: 4px;

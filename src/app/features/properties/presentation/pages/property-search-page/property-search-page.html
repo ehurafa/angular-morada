@@ -57,6 +57,15 @@
       </div>
     </header>
 
+    @if (
+      !store.loading() && !store.error() && store.matchType() === 'nearby' && store.hasResults()
+    ) {
+      <div class="nearby-feedback" role="status">
+        <strong>Não encontramos imóveis para essa localização.</strong>
+        <p>Mostramos outras opções em São Paulo que respeitam seus filtros.</p>
+      </div>
+    }
+
     @if (store.loading()) {
       <div class="state-panel" role="status">
         <span class="loading-indicator" aria-hidden="true"></span>
