@@ -1,3 +1,7 @@
+import express from 'express';
+import { extname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { createApp } from './app.mjs';
 import { PROPERTIES } from './data/properties.mjs';
 import { createPropertyAvailabilityServer } from './realtime/property-availability-server.mjs';
@@ -8,9 +12,24 @@ const app = createApp({
   properties: PROPERTIES,
 });
 
-const server = app.listen(port, '127.0.0.1', () => {
-  console.log(`Morada API disponível em http://localhost:${port}`);
-  console.log(`Atualizações disponíveis em ws://localhost:${port}/api/property-availability`);
+const browserDirectory = fileURLToPath(new URL('../dist/morada/browser/', import.meta.url));
+
+app.use(express.static(browserDirectory));
+
+app.get(/^\/(?!api(?:\/|$)).*/, (request, response, next) => {
+  if (extname(request.path)) {
+    next();
+    return;
+  }
+
+  response.sendFile('index.html', { root: browserDirectory });
+});
+
+const hostname = process.env.HOST ?? '127.0.0.1';
+
+const server = app.listen(port, hostname, () => {
+  console.log(`Morada disponível em ${hostname}:${port}`);
+  console.log('Atualizações disponíveis em /api/property-availability');
 });
 
 const availabilityServer = createPropertyAvailabilityServer({
