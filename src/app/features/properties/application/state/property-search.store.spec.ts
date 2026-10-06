@@ -199,4 +199,21 @@ describe('PropertySearchStore', () => {
     expect(repository.search).toHaveBeenCalledOnceWith(INITIAL_FILTERS);
     expect(store.loading()).toBeTrue();
   });
+
+  it('toggles favorites without mutating the previous set', () => {
+    const before = store.favoriteIds();
+
+    store.toggleFavorite(PROPERTY.id);
+
+    const selected = store.favoriteIds();
+
+    expect(before.has(PROPERTY.id)).toBeFalse();
+    expect(selected.has(PROPERTY.id)).toBeTrue();
+    expect(selected).not.toBe(before);
+
+    store.toggleFavorite(PROPERTY.id);
+
+    expect(store.favoriteIds().has(PROPERTY.id)).toBeFalse();
+    expect(selected.has(PROPERTY.id)).toBeTrue();
+  });
 });

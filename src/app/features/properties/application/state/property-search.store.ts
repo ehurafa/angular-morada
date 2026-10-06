@@ -30,6 +30,7 @@ export class PropertySearchStore {
   private readonly loadingState = signal(false);
   private readonly errorState = signal<PropertySearchError | null>(null);
   private readonly locationsState = signal<readonly LocationSuggestion[]>([]);
+  private readonly favoriteIdsState = signal<ReadonlySet<string>>(new Set<string>());
 
   readonly filters = this.filtersState.asReadonly();
   readonly properties = this.propertiesState.asReadonly();
@@ -38,6 +39,7 @@ export class PropertySearchStore {
   readonly loading = this.loadingState.asReadonly();
   readonly error = this.errorState.asReadonly();
   readonly locations = this.locationsState.asReadonly();
+  readonly favoriteIds = this.favoriteIdsState.asReadonly();
 
   readonly hasResults = computed(() => this.properties().length > 0);
 
@@ -83,6 +85,20 @@ export class PropertySearchStore {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((locations) => this.locationsState.set(locations));
+  }
+
+  toggleFavorite(propertyId: string): void {
+    this.favoriteIdsState.update((current) => {
+      const next = new Set(current);
+
+      if (next.has(propertyId)) {
+        next.delete(propertyId);
+      } else {
+        next.add(propertyId);
+      }
+
+      return next;
+    });
   }
 
   search(): void {

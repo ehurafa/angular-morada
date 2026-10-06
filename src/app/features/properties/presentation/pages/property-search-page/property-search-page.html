@@ -31,7 +31,8 @@
         <p>
           {{ store.properties().length }}
           {{ store.properties().length === 1 ? 'opção demonstrativa' : 'opções demonstrativas' }}
-          em São Paulo. Preços, anúncios e contatos são sintéticos.
+          em São Paulo. Preços, anúncios e contatos são sintéticos. Favoritos são temporários e não
+          ficam salvos após sair desta página.
         </p>
       </div>
 
@@ -100,6 +101,8 @@
         @for (property of store.properties(); track property.id) {
           <morada-property-card
             [property]="property"
+            [isFavorite]="store.favoriteIds().has(property.id)"
+            (favoriteToggled)="store.toggleFavorite($event)"
             (detailsRequested)="openPropertyDetails($event)"
             (mapRequested)="showPropertyOnMap($event)"
           />

@@ -17,6 +17,10 @@ Aplicação web de busca de imóveis desenvolvida com Angular.
 
 Os imóveis, preços e contatos apresentados são fictícios e utilizados apenas para demonstração.
 
+## Favoritos demonstrativos
+
+Nos cards da busca, o botão Favoritar marca e desmarca imóveis durante a visita à página. Os favoritos são temporários: não exigem conta e desaparecem ao recarregar ou sair da página.
+
 ## Tecnologias
 
 - Angular

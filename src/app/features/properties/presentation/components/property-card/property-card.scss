@@ -73,11 +73,56 @@
   flex-direction: column;
 }
 
+.property-topline {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
 .property-location {
-  margin: 0 0 8px;
+  flex: 1 1 130px;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
   color: var(--morada-muted);
   font-size: 13px;
   font-weight: 600;
+}
+
+.favorite-action {
+  min-height: 44px;
+  margin-inline-start: auto;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--morada-blue);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &:hover {
+    background: var(--morada-sky);
+  }
+
+  &[aria-pressed='true'] svg {
+    fill: currentColor;
+  }
 }
 
 h2 {

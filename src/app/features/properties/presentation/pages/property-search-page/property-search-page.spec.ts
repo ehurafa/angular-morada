@@ -283,6 +283,31 @@ describe('PropertySearchPage', () => {
 
     expect(Array.from(options, (option) => option.value)).toEqual(['Pinheiros']);
   });
+
+  it('marks and unmarks a favorite from a property card', () => {
+    response.next(SEARCH_RESULT);
+    response.complete();
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const button = element.querySelector<HTMLButtonElement>('.favorite-action')!;
+
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+    expect(button.getAttribute('aria-label')).toContain(
+      'Adicionar Apartamento em Pinheiros aos favoritos',
+    );
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    expect(button.textContent).toContain('Favorito');
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+  });
 });
 
 describe('PropertySearchPage URL filters', () => {
