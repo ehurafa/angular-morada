@@ -1,8 +1,14 @@
 # Morada
 
-Aplicação web de busca de imóveis desenvolvida com Angular.
+Aplicação demonstrativa de busca de imóveis, desenvolvida com Angular e Express para estudo e portfólio.
+
+**Demonstração online:** [Acessar a Morada](https://morada-ehurafa.onrender.com/)
+
+![Demonstração da busca e da navegação pelos imóveis na Morada](docs/media/morada-demo.gif)
 
 > ⚠️ Este projeto está em desenvolvimento. Algumas funcionalidades ainda não estão disponíveis e podem sofrer alterações.
+
+O serviço gratuito pode demorar a iniciar após um período sem acessos.
 
 ## Funcionalidades atuais
 
@@ -11,7 +17,7 @@ Aplicação web de busca de imóveis desenvolvida com Angular.
 - Detalhes do imóvel com galeria, comodidades e custos
 - Formulário demonstrativo de contato
 - Avisos de disponibilidade em tempo real com reconexão automática
-- API local com dados demonstrativos
+- API Express com dados demonstrativos
 - Execução como aplicação Angular ou microfrontend single-spa
 - Testes automatizados, lint e formatação
 
@@ -30,9 +36,62 @@ Nos cards da busca, o botão Favoritar marca e desmarca imóveis durante a visit
 - single-spa
 - Jasmine e Karma
 
-## Disponibilidade em tempo real
+## Como funciona
 
-Execute `npm start` para iniciar a aplicação e a API local.
+```mermaid
+flowchart LR
+    V[Visitante] --> UI["Angular: busca, mapa e detalhes"]
+
+    subgraph R["Render: serviço Node.js"]
+        E[Express]
+        API["API HTTP: /api"]
+        WS["WebSocket: disponibilidade"]
+        D[Catálogo demonstrativo]
+        E --> API
+        E --> WS
+        API --> D
+        WS --> D
+    end
+
+    E -->|HTML, CSS e JavaScript| UI
+    UI -->|Busca, filtros e detalhes| API
+    WS -->|Atualizações simuladas| UI
+```
+
+No ambiente publicado, um único serviço Node entrega o Angular, atende as requisições da API e envia os avisos de disponibilidade por WebSocket. O catálogo contém apenas imóveis fictícios.
+
+## Executar localmente
+
+Pré-requisitos: Node.js e npm.
+
+```bash
+npm ci
+npm start
+```
+
+Acesse [http://localhost:4200](http://localhost:4200). O comando inicia o Angular na porta 4200 e a API Express na porta 3000. O proxy de desenvolvimento encaminha as requisições `/api` e a conexão WebSocket.
+
+## Verificações
+
+```bash
+npm run test:api
+npm test -- --watch=false
+npm run lint
+npm run format:check
+npm run build
+```
+
+Os testes da interface usam o Chrome.
+
+## Publicação no Render
+
+O arquivo [render.yaml](render.yaml) configura um serviço Node gratuito. O build compila o Angular; depois, o Express entrega o aplicativo, a API e o WebSocket no mesmo domínio. O Render verifica a saúde do serviço em `/api/properties`.
+
+Para criar outra instância, no painel do Render selecione **New > Blueprint**, informe a URL pública `https://github.com/ehurafa/angular-morada` e escolha a branch `main`. O Blueprint usa o `render.yaml` da raiz do repositório.
+
+Este serviço foi conectado pela URL pública, sem integração do GitHub. Portanto, após enviar mudanças de código para `main`, abra o serviço no Render e use **Manual Deploy > Deploy latest commit**. Se alterar o `render.yaml`, use **Manual Sync** na página do Blueprint para aplicar a nova configuração.
+
+## Disponibilidade em tempo real
 
 Ao abrir `http://localhost:4200`, a aplicação estabelece uma conexão WebSocket
 pelo caminho `/api/property-availability`. O servidor envia uma atualização
