@@ -1,7 +1,7 @@
 import type { ParamMap, Params } from '@angular/router';
 
 import type { PropertyType } from '../../../domain/models/property';
-import type { PropertySearchFilters } from '../../../domain/models/property-search';
+import type { PropertySearchFilters, SearchSort } from '../../../domain/models/property-search';
 
 function readPropertyType(value: string | null): PropertyType | null {
   if (value === 'apartment' || value === 'house' || value === 'studio' || value === 'penthouse') {
@@ -21,6 +21,10 @@ function readOptionalInteger(value: string | null, minimum: number): number | nu
   return Number.isSafeInteger(number) && number >= minimum ? number : null;
 }
 
+function readSearchSort(value: string | null): SearchSort {
+  return value === 'price-asc' || value === 'price-desc' ? value : 'relevance';
+}
+
 export function readPropertySearchFilters(params: ParamMap): PropertySearchFilters {
   return {
     transactionType: params.get('transactionType') === 'rent' ? 'rent' : 'sale',
@@ -28,6 +32,7 @@ export function readPropertySearchFilters(params: ParamMap): PropertySearchFilte
     propertyType: readPropertyType(params.get('propertyType')),
     minimumBedrooms: readOptionalInteger(params.get('minimumBedrooms'), 1),
     maximumPrice: readOptionalInteger(params.get('maximumPrice'), 0),
+    sort: readSearchSort(params.get('sort')),
   };
 }
 
@@ -53,6 +58,10 @@ export function createPropertySearchQueryParams(filters: PropertySearchFilters):
 
   if (filters.maximumPrice !== null) {
     params['maximumPrice'] = filters.maximumPrice;
+  }
+
+  if (filters.sort && filters.sort !== 'relevance') {
+    params['sort'] = filters.sort;
   }
 
   return params;

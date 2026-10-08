@@ -61,6 +61,26 @@ describe('searchProperties', () => {
     );
   });
 
+  it('sorts eligible properties by price in both directions', () => {
+    const ascending = searchProperties(CATALOG, {
+      propertyType: 'apartamento',
+      sort: 'price-asc',
+    });
+    const descending = searchProperties(CATALOG, {
+      propertyType: 'apartamento',
+      sort: 'price-desc',
+    });
+
+    assert.deepEqual(
+      ascending.items.map(({ id }) => id),
+      ['property-1', 'property-2'],
+    );
+    assert.deepEqual(
+      descending.items.map(({ id }) => id),
+      ['property-2', 'property-1'],
+    );
+  });
+
   it('matches text regardless of accents and letter case', () => {
     const result = searchProperties(CATALOG, {
       query: 'VILA MADALÉNA',

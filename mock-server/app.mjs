@@ -83,6 +83,7 @@ export function createApp({ allowedOrigins = DEFAULT_ALLOWED_ORIGINS, properties
       propertyType: readQueryString(request.query.propertyType) || null,
       bedrooms: readOptionalNumber(request.query.bedrooms),
       maxPrice: readOptionalNumber(request.query.maxPrice),
+      sort: readQueryString(request.query.sort) || 'relevance',
     });
 
     response.json({

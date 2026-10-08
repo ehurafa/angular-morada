@@ -14,6 +14,7 @@ import { PropertyCard } from '../../components/property-card/property-card';
 import { PropertySearchForm } from '../../components/property-search-form/property-search-form';
 import { SiteHeader } from '../../../../../shared/components/site-header/site-header';
 import { PropertyMapPreview } from '../../components/property-map-preview/property-map-preview';
+import type { SearchSort } from '../../../domain/models/property-search';
 
 @Component({
   selector: 'morada-property-search-page',
@@ -64,6 +65,17 @@ export class PropertySearchPage implements OnInit {
     }
 
     void this.router.navigateByUrl(urlTree);
+  }
+
+  protected changeSort(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+
+    if (value !== 'relevance' && value !== 'price-asc' && value !== 'price-desc') {
+      return;
+    }
+
+    this.store.updateFilters({ sort: value as SearchSort });
+    this.search();
   }
 
   protected selectTransactionType(transactionType: TransactionType): void {

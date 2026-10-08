@@ -21,6 +21,7 @@ describe('readPropertySearchFilters', () => {
       propertyType: 'apartment',
       minimumBedrooms: 2,
       maximumPrice: 5000,
+      sort: 'relevance',
     });
   });
 
@@ -38,7 +39,17 @@ describe('readPropertySearchFilters', () => {
       propertyType: null,
       minimumBedrooms: null,
       maximumPrice: null,
+      sort: 'relevance',
     });
+  });
+
+  it('restores price sorting and defaults an invalid value to relevance', () => {
+    const selected = readPropertySearchFilters(convertToParamMap({ sort: 'price-desc' }));
+    const invalid = readPropertySearchFilters(convertToParamMap({ sort: 'unknown' }));
+
+    expect(selected.sort).toBe('price-desc');
+    expect(invalid.sort).toBe('relevance');
+    expect(createPropertySearchQueryParams(selected)).toEqual({ sort: 'price-desc' });
   });
 });
 

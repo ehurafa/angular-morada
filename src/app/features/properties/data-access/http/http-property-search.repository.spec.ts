@@ -63,7 +63,7 @@ describe('HttpPropertySearchRepository', () => {
   });
 
   it('sends translated filters and maps the response', async () => {
-    const resultPromise = firstValueFrom(repository.search(FILTERS));
+    const resultPromise = firstValueFrom(repository.search({ ...FILTERS, sort: 'price-desc' }));
 
     const request = httpTesting.expectOne(
       (candidate) => candidate.url === 'https://api.example.test/properties',
@@ -75,6 +75,7 @@ describe('HttpPropertySearchRepository', () => {
     expect(request.request.params.get('propertyType')).toBe('apartamento');
     expect(request.request.params.get('bedrooms')).toBe('2');
     expect(request.request.params.get('maxPrice')).toBe('1000000');
+    expect(request.request.params.get('sort')).toBe('price-desc');
 
     request.flush(API_RESPONSE);
 

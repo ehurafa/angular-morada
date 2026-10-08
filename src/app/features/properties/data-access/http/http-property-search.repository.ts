@@ -66,6 +66,10 @@ export class HttpPropertySearchRepository extends PropertySearchRepository {
       params = params.set('maxPrice', filters.maximumPrice);
     }
 
+    if (filters.sort && filters.sort !== 'relevance') {
+      params = params.set('sort', filters.sort);
+    }
+
     return params;
   }
 }

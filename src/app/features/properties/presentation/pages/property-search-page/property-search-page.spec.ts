@@ -20,6 +20,7 @@ const INITIAL_FILTERS: PropertySearchFilters = {
   propertyType: null,
   minimumBedrooms: null,
   maximumPrice: null,
+  sort: 'relevance',
 };
 
 const PROPERTY: Property = {
@@ -336,6 +337,7 @@ describe('PropertySearchPage URL filters', () => {
       propertyType: 'apartment',
       minimumBedrooms: 2,
       maximumPrice: 5000,
+      sort: 'relevance',
     });
   });
 
@@ -371,6 +373,7 @@ describe('PropertySearchPage URL filters', () => {
       propertyType: null,
       minimumBedrooms: null,
       maximumPrice: null,
+      sort: 'relevance',
     });
   });
 
@@ -487,6 +490,39 @@ describe('PropertySearchPage URL filters', () => {
       ...INITIAL_FILTERS,
       transactionType: 'rent',
       query: 'Pinheiros',
+    });
+  });
+
+  it('updates the URL and searches when the sort order changes', async () => {
+    const repository = createRepositorySpy();
+    repository.search.and.returnValue(of(SEARCH_RESULT));
+
+    await TestBed.configureTestingModule({
+      imports: [PropertySearchPage],
+      providers: [
+        provideRouter([{ path: '', component: PropertySearchPage }]),
+        {
+          provide: PropertySearchRepository,
+          useValue: repository,
+        },
+      ],
+    }).compileComponents();
+
+    const harness = await RouterTestingHarness.create('/');
+    const router = TestBed.inject(Router);
+    const sort = harness.routeNativeElement!.querySelector<HTMLSelectElement>('#property-sort')!;
+
+    repository.search.calls.reset();
+
+    sort.value = 'price-asc';
+    sort.dispatchEvent(new Event('change', { bubbles: true }));
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(router.parseUrl(router.url).queryParams).toEqual({ sort: 'price-asc' });
+    expect(repository.search).toHaveBeenCalledOnceWith({
+      ...INITIAL_FILTERS,
+      sort: 'price-asc',
     });
   });
 

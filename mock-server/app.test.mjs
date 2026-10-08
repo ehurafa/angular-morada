@@ -73,6 +73,20 @@ describe('GET /api/properties', () => {
     assert.equal('searchTerms' in response.body.items[0], false);
   });
 
+  it('orders search results by the requested price direction', async () => {
+    const app = createApp({ properties: CATALOG });
+
+    const response = await request(app)
+      .get('/api/properties')
+      .query({ businessType: 'comprar', sort: 'price-desc' })
+      .expect(200);
+
+    assert.deepEqual(
+      response.body.items.map(({ id }) => id),
+      ['property-2', 'property-1'],
+    );
+  });
+
   it('does not authorize an unknown origin through CORS', async () => {
     const app = createApp({
       properties: CATALOG,

@@ -38,6 +38,7 @@ export function searchProperties(
     propertyType = null,
     bedrooms = null,
     maxPrice = null,
+    sort = 'relevance',
   } = {},
 ) {
   const normalizedQuery = normalizeText(query);
@@ -61,10 +62,19 @@ export function searchProperties(
 
   const hasTextMatch = normalizedQuery === '' || rankedProperties.length > 0;
 
-  const items = (
-    hasTextMatch ? rankedProperties.map(({ property }) => property) : eligibleProperties
-  ).slice(0, RESULT_LIMIT);
+  const matchingProperties = hasTextMatch
+    ? rankedProperties.map(({ property }) => property)
+    : eligibleProperties;
 
+  let orderedProperties = matchingProperties;
+
+  if (sort === 'price-asc') {
+    orderedProperties = [...matchingProperties].sort((first, second) => first.price - second.price);
+  } else if (sort === 'price-desc') {
+    orderedProperties = [...matchingProperties].sort((first, second) => second.price - first.price);
+  }
+
+  const items = orderedProperties.slice(0, RESULT_LIMIT);
   const matchType = normalizedQuery === '' ? 'all' : hasTextMatch ? 'exact' : 'nearby';
 
   return {
