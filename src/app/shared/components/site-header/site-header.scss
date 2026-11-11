@@ -19,6 +19,9 @@
 }
 
 .brand {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   color: var(--morada-navy);
   font-size: 31px;
   font-weight: 700;
