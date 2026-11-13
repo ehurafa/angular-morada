@@ -88,9 +88,19 @@ export class PropertySearchPage implements OnInit {
   }
 
   protected openPropertyDetails(propertyId: string): void {
-    void this.router.navigate(['/imoveis', propertyId], {
-      queryParamsHandling: 'preserve',
-    });
+    void this.router
+      .navigate(['/imoveis', propertyId], {
+        queryParamsHandling: 'preserve',
+      })
+      .then((navigated) => {
+        if (!navigated) {
+          return;
+        }
+
+        const main = document.querySelector<HTMLElement>('morada-property-details-page main');
+        main?.focus({ preventScroll: true });
+        main?.scrollIntoView({ block: 'start' });
+      });
   }
 
   protected showMap(): void {
