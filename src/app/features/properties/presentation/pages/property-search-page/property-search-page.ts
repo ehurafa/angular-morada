@@ -1,4 +1,12 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -41,6 +49,18 @@ export class PropertySearchPage implements OnInit {
 
     return this.store.properties().find((property) => property.id === selectedPropertyId) ?? null;
   });
+
+  constructor() {
+    afterNextRender(() => {
+      if (this.route.snapshot.fragment !== 'results') {
+        return;
+      }
+
+      const heading = document.getElementById('results-title');
+      heading?.focus({ preventScroll: true });
+      heading?.scrollIntoView({ block: 'start' });
+    });
+  }
 
   ngOnInit(): void {
     this.store.loadLocations();
