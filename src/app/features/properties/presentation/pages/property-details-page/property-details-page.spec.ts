@@ -76,6 +76,7 @@ describe('PropertyDetailsPage', () => {
     response.complete();
     fixture.detectChanges();
 
+    expect(document.title).toBe(`${PROPERTY.title} | Morada`);
     expect(fixture.nativeElement.querySelector('morada-property-contact-form')).not.toBeNull();
 
     const heading = fixture.nativeElement.querySelector('h1') as HTMLHeadingElement;

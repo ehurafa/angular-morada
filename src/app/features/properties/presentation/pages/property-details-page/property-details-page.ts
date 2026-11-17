@@ -1,4 +1,5 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import type { TransactionType } from '../../../domain/models/property';
@@ -45,6 +46,17 @@ export class PropertyDetailsPage implements OnInit {
   private readonly propertyId = inject(ActivatedRoute).snapshot.paramMap.get('id');
 
   private readonly router = inject(Router);
+  private readonly title = inject(Title);
+
+  constructor() {
+    effect(() => {
+      const property = this.store.property();
+
+      if (property !== null) {
+        this.title.setTitle(`${property.title} | Morada`);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.loadProperty();
