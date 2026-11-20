@@ -50,6 +50,18 @@ export class PropertySearchPage implements OnInit {
     return this.store.properties().find((property) => property.id === selectedPropertyId) ?? null;
   });
 
+  protected readonly hasActiveFilters = computed(() => {
+    const filters = this.store.filters();
+
+    return (
+      filters.transactionType !== 'sale' ||
+      filters.query.trim() !== '' ||
+      filters.propertyType !== null ||
+      filters.minimumBedrooms !== null ||
+      filters.maximumPrice !== null
+    );
+  });
+
   constructor() {
     afterNextRender(() => {
       if (this.route.snapshot.fragment !== 'results') {
@@ -85,6 +97,11 @@ export class PropertySearchPage implements OnInit {
     }
 
     void this.router.navigateByUrl(urlTree);
+  }
+
+  protected clearFilters(): void {
+    this.store.resetFilters();
+    this.search();
   }
 
   protected changeSort(event: Event): void {

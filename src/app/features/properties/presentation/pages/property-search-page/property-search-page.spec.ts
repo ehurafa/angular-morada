@@ -162,7 +162,8 @@ describe('PropertySearchPage', () => {
     const element = fixture.nativeElement as HTMLElement;
 
     expect(element.querySelector('.nearby-feedback')).toBeNull();
-    expect(element.textContent).toContain('Nenhum imóvel com esses filtros');
+    expect(element.textContent).toContain('Nenhum imóvel encontrado');
+    expect(element.querySelector('.state-panel button')).toBeNull();
   });
 
   it('allows another attempt after a search error', () => {
@@ -339,6 +340,40 @@ describe('PropertySearchPage URL filters', () => {
       maximumPrice: 5000,
       sort: 'relevance',
     });
+  });
+
+  it('clears filters and searches again from empty results', async () => {
+    const repository = createRepositorySpy();
+    repository.search.and.returnValues(of({ ...SEARCH_RESULT, properties: [] }), of(SEARCH_RESULT));
+
+    await TestBed.configureTestingModule({
+      imports: [PropertySearchPage],
+      providers: [
+        provideRouter([{ path: '', component: PropertySearchPage }]),
+        {
+          provide: PropertySearchRepository,
+          useValue: repository,
+        },
+      ],
+    }).compileComponents();
+
+    const harness = await RouterTestingHarness.create('/?query=SemResultado&maximumPrice=100');
+    const router = TestBed.inject(Router);
+    harness.detectChanges();
+
+    const element = harness.routeNativeElement!;
+    const clearButton = element.querySelector<HTMLButtonElement>('.state-panel button')!;
+
+    expect(clearButton.textContent).toContain('Limpar filtros');
+
+    clearButton.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(router.url).toBe('/');
+    expect(repository.search).toHaveBeenCalledTimes(2);
+    expect(repository.search).toHaveBeenCalledWith(INITIAL_FILTERS);
+    expect(element.querySelector('morada-property-card')).not.toBeNull();
   });
 
   it('updates the search when URL filters change on the same page', async () => {

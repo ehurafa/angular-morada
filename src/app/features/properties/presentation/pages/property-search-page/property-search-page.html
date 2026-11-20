@@ -126,8 +126,14 @@
           />
         } @empty {
           <div class="state-panel">
-            <h3>Nenhum imóvel com esses filtros</h3>
-            <p>Remova um filtro ou tente outra localização.</p>
+            @if (hasActiveFilters()) {
+              <h3>Nenhum imóvel com esses filtros</h3>
+              <p>Limpe os filtros para buscar outras opções.</p>
+              <button type="button" (click)="clearFilters()">Limpar filtros</button>
+            } @else {
+              <h3>Nenhum imóvel encontrado</h3>
+              <p>Não há imóveis demonstrativos para mostrar no momento.</p>
+            }
           </div>
         }
       </div>
