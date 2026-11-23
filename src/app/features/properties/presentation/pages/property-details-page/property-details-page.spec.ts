@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { of, Subject } from 'rxjs';
 
 import { PropertyDetailsRepository } from '../../../application/ports/property-details.repository';
@@ -50,6 +51,7 @@ describe('PropertyDetailsPage', () => {
         {
           provide: ActivatedRoute,
           useValue: {
+            paramMap: of(convertToParamMap({ id: 'property-1' })),
             snapshot: {
               paramMap: convertToParamMap({
                 id: 'property-1',
@@ -103,5 +105,46 @@ describe('PropertyDetailsPage', () => {
     expect(repository.findById).toHaveBeenCalledTimes(2);
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toContain(PROPERTY.title);
     expect(fixture.nativeElement.querySelector('[role="alert"]')).toBeNull();
+  });
+});
+
+describe('PropertyDetailsPage route changes', () => {
+  it('loads the new property when the route ID changes', async () => {
+    const otherProperty: Property = {
+      ...PROPERTY,
+      id: 'property-2',
+      title: 'Casa em Perdizes',
+    };
+    const repository = jasmine.createSpyObj<PropertyDetailsRepository>(
+      'PropertyDetailsRepository',
+      ['findById'],
+    );
+    repository.findById.and.callFake((id) => of(id === PROPERTY.id ? PROPERTY : otherProperty));
+
+    await TestBed.configureTestingModule({
+      imports: [PropertyDetailsPage],
+      providers: [
+        provideRouter([{ path: 'imoveis/:id', component: PropertyDetailsPage }]),
+        {
+          provide: PropertyDetailsRepository,
+          useValue: repository,
+        },
+      ],
+    }).compileComponents();
+
+    const harness = await RouterTestingHarness.create();
+    const firstPage = await harness.navigateByUrl('/imoveis/property-1', PropertyDetailsPage);
+    harness.detectChanges();
+
+    const secondPage = await harness.navigateByUrl('/imoveis/property-2', PropertyDetailsPage);
+    harness.detectChanges();
+
+    expect(secondPage).toBe(firstPage);
+    expect(repository.findById).toHaveBeenCalledTimes(2);
+    expect(repository.findById).toHaveBeenCalledWith('property-2');
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toContain(
+      otherProperty.title,
+    );
+    expect(document.title).toBe(`${otherProperty.title} | Morada`);
   });
 });

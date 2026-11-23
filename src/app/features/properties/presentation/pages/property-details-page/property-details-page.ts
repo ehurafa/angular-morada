@@ -1,4 +1,5 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -43,7 +44,8 @@ export class PropertyDetailsPage implements OnInit {
     }).format(property.price);
   });
 
-  private readonly propertyId = inject(ActivatedRoute).snapshot.paramMap.get('id');
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly router = inject(Router);
   private readonly title = inject(Title);
@@ -59,7 +61,16 @@ export class PropertyDetailsPage implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadProperty();
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const propertyId = params.get('id');
+
+      if (propertyId === null) {
+        return;
+      }
+
+      this.selectedImageIndex.set(0);
+      this.store.load(propertyId);
+    });
   }
 
   protected retryLoad(): void {
@@ -95,8 +106,10 @@ export class PropertyDetailsPage implements OnInit {
   }
 
   private loadProperty(): void {
-    if (this.propertyId !== null) {
-      this.store.load(this.propertyId);
+    const propertyId = this.route.snapshot.paramMap.get('id');
+
+    if (propertyId !== null) {
+      this.store.load(propertyId);
     }
   }
 }
