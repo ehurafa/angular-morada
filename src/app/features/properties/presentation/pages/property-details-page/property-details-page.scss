@@ -31,9 +31,14 @@
   padding: 24px 0 72px;
 }
 
+.heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 16px;
+}
+
 .back-link {
   min-height: 44px;
-  margin-bottom: 8px;
   display: inline-flex;
   align-items: center;
   color: var(--morada-blue);
@@ -44,6 +49,15 @@
     text-decoration: underline;
     text-underline-offset: 4px;
   }
+}
+
+.copy-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .page-state {

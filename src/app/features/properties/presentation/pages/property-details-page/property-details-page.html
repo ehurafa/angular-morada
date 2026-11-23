@@ -33,9 +33,17 @@
 
       <section class="property-heading" aria-labelledby="property-title">
         <div class="heading-copy">
-          <a class="back-link" routerLink="/" queryParamsHandling="preserve" fragment="results">
-            Voltar aos resultados
-          </a>
+          <div class="heading-actions">
+            <a class="back-link" routerLink="/" queryParamsHandling="preserve" fragment="results">
+              Voltar aos resultados
+            </a>
+
+            <button class="back-link copy-link" type="button" (click)="copyPropertyLink()">
+              Copiar link
+            </button>
+          </div>
+
+          <span role="status" aria-live="polite">{{ copyFeedback() }}</span>
 
           <h1 id="property-title">
             {{ property.title }}

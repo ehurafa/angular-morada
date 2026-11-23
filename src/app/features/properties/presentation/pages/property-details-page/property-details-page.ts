@@ -29,6 +29,7 @@ export class PropertyDetailsPage implements OnInit {
   );
 
   protected readonly demoNotice = signal<string | null>(null);
+  protected readonly copyFeedback = signal<string | null>(null);
 
   protected readonly formattedPrice = computed(() => {
     const property = this.store.property();
@@ -69,6 +70,7 @@ export class PropertyDetailsPage implements OnInit {
       }
 
       this.selectedImageIndex.set(0);
+      this.copyFeedback.set(null);
       this.store.load(propertyId);
     });
   }
@@ -87,6 +89,17 @@ export class PropertyDetailsPage implements OnInit {
         transactionType,
       },
     });
+  }
+
+  protected async copyPropertyLink(): Promise<void> {
+    this.copyFeedback.set(null);
+
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      this.copyFeedback.set('Link copiado para a área de transferência.');
+    } catch {
+      this.copyFeedback.set('Não foi possível copiar. Copie o endereço do navegador.');
+    }
   }
 
   protected selectImage(index: number): void {
